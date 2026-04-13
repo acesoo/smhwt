@@ -15,7 +15,7 @@ Much of a student's mental health data is **tacit**. It exists as "internal stat
 ### 2.3 Cognitive Depletion and Information Overload
 The lack of a structured KM system leads to a processing burden that exceeds an individual’s cognitive capacity. This "Information Overload" often triggers **Cyberchondria**—a state where students rely on anecdotal online evidence rather than their own longitudinal data, leading to increased anxiety and the overuse of medical services (Zhong et al., 2024).
 
-## 3. Theoretical Framework: The SECI Model (S1-KM-02)
+## 3. Theoretical Framework: The SECI Model
 To address these gaps, this project adopts the **SECI Model** (Socialization, Externalization, Combination, Internalization) over traditional social-learning frameworks like Communities of Practice.
 
 ### 3.1 Why SECI Over Communities of Practice?
