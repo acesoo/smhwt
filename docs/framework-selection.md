@@ -1,7 +1,5 @@
 # Framework Selection Memo
 
----
-
 ## KM Problem Identification 
 
 Based on the research analysis, the primary knowledge gap for students is the inability to convert raw personal data into actionable **self-knowledge**. We have identified four critical "KM Pain Points":
