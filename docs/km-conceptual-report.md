@@ -34,7 +34,7 @@ The following features are designed to facilitate the SECI process:
 * **Reflective Insights (Internalization):** Prompts the user to review trends, turning data into self-awareness.
 
 ## 5. REFERENCES
-* Almalki, M., Gray, K., & Sanchez, F. M. (2015). The use of self-quantification systems for personal health information: Big data management activities and prospects. *Health Information Science and Systems*, 3(Suppl 1), S1.
-* Huang, H. Y., & Bashir, M. (2017). Users' adoption of mental health apps: Examining the impact of information cues. *JMIR mHealth and uHealth*, 5(6), e83.
-* Nonaka, I., & Takeuchi, H. (1995). *The Knowledge-Creating Company*. Oxford University Press.
-* Zhong, L., Cao, J., & Xue, F. (2024). The paradox of convenience: How information overload in mHealth apps leads to medical service overuse. *Frontiers in Public Health*, 12, 1408998.
+* **Almalki, M., Gray, K., & Sanchez, F. M. (2015).** The use of self-quantification systems for personal health information: Big data management activities and prospects. *Health Information Science and Systems*, 3(Suppl 1), S1.
+* **Huang, H. Y., & Bashir, M. (2017).** Users' adoption of mental health apps: Examining the impact of information cues. *JMIR mHealth and uHealth*, 5(6), e83.
+* **Nonaka, I., & Takeuchi, H. (1995).** *The Knowledge-Creating Company*. Oxford University Press.
+* **Zhong, L., Cao, J., & Xue, F. (2024).** The paradox of convenience: How information overload in mHealth apps leads to medical service overuse. *Frontiers in Public Health*, 12, 1408998.
