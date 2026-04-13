@@ -1,9 +1,5 @@
 # Framework Selection Memo
 
-| Project | Role | Sprint | Date |
-| :--- | :--- | :--- | :--- |
-| **Student Wellness Tracker** | Knowledge Management Analyst | Sprint 1 (Weeks 1-2) | April 2026 |
-
 ---
 
 ## KM Problem Identification 
