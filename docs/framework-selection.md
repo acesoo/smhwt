@@ -6,7 +6,7 @@
 
 ---
 
-## KM Problem Identification (S1-KM-01)
+## KM Problem Identification 
 
 Based on the research analysis, the primary knowledge gap for students is the inability to convert raw personal data into actionable **self-knowledge**. We have identified four critical "KM Pain Points":
 
@@ -17,7 +17,7 @@ Based on the research analysis, the primary knowledge gap for students is the in
 
 ---
 
-## 2. KM Framework Evaluation (S1-KM-02)
+## 2. KM Framework Evaluation 
 
 ### Considered: Communities of Practice (Wenger)
 While strong for social learning, mental health is often a sensitive, private matter hindered by **stigma and labeling effects**. A communal learning structure may trigger "self-stigma," making users less likely to document honest internal states.
