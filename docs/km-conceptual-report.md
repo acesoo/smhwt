@@ -1,7 +1,4 @@
 # KM Conceptual Report: SECI-Based Mental Health Informatics
-**Project:** Student Wellness Tracker  
-**Role:** Knowledge Management Analyst  
-**Date:** April 2026
 
 ## 1. Introduction
 The mental health landscape for university students is increasingly characterized by a paradox of data: while students have more access to health-tracking tools than ever before, their actual "self-knowledge" remains low. This report proposes a Knowledge Management (KM) solution for a Student Wellness Tracker. Unlike standard logging apps, this project utilizes the **SECI Model** to facilitate the transition from fleeting emotional states to structured, actionable wellness insights. By treating the application as a "Ba" (a shared space for knowledge creation), we aim to solve the persistent issue of information fragmentation and ensure that personal data leads to genuine behavioral change.
