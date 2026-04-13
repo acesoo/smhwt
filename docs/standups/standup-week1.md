@@ -20,7 +20,7 @@
 
 ## Member Status
 
-### PM — [Your name]
+### PM — acesoo
 - **Completed:** Created GitHub repo, set up folder structure, added branch protection on `main`, created GitHub Projects board with milestones and task cards, filed Decision Log entry #1
 - **This week:** Create `feature/pm-setup` branch, file standup notes, set up `dev` branch and protection rules
 - **Blockers:** None
@@ -30,7 +30,7 @@
 - **This week:** Begin S2 Supabase schema design, set up Vercel project link
 - **Blockers:** None
 
-### QA / Docs Lead — jpcasapao
+### QA / Docs Lead — kimmoguer
 - **Completed:** Created README.md with all 11 section headers, wrote CONTRIBUTING.md with clone instructions, branch naming, commit standards, and PR process, opened and merged PR to `dev`
 - **This week:** Begin writing test cases TC-001 to TC-005
 - **Blockers:** Needs KM framework memo from KM Analyst before writing feature-specific test cases
@@ -40,7 +40,7 @@
 - **This week:** Open new PR from `feature/km-research` → `dev`, share framework memo with UX Designer and Developer
 - **Blockers:** PR was originally targeting `main` — now redirected. New PR to `dev` needed.
 
-### UX/UI Designer — [UX member name]
+### UX/UI Designer — jpcasapao
 - **Completed:** Researched 3+ reference apps (Headspace, Daylio, Woebot), produced Dashboard wireframe with KM annotation, committed to `/docs/wireframes/`
 - **This week:** Wait for KM Analyst memo before finalizing wireframe, begin Core Feature Screen wireframe (S2-UX-01)
 - **Blockers:** Needs KM framework memo confirmed before finalizing wireframe layouts
@@ -55,7 +55,7 @@
 
 ---
 
-## Action Items for Next Week
+## Action Items for Next Sprint
 
 | Action | Owner | Due |
 |--------|-------|-----|
