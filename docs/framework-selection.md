@@ -47,7 +47,7 @@ Our application functions as a **"Ba"**—a secure, personalized dashboard where
 
 ---
 
-## 📚 5. References (APA 7th Edition)
+## 📚 5. References
 * **Almalki, M., Gray, K., & Sanchez, F. M. (2015).** The use of self-quantification systems for personal health information. *Health Information Science and Systems*, 3(Suppl 1), S1.
 * **Huang, H. Y., & Bashir, M. (2017).** Users' adoption of mental health apps. *JMIR mHealth and uHealth*, 5(6), e83.
 * **Nonaka, I., & Takeuchi, H. (1995).** *The Knowledge-Creating Company*. Oxford University Press.
