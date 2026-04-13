@@ -6,7 +6,7 @@
 ### Sprint 1: Kickoff & Discovery (Weeks 1–2)
 
 #### Prompt 1: Framework Comparison
-**Date:** [April 2026]
+****Date:** [April 2026]**
 **User Intent:** Researching KM frameworks suitable for a student wellness app.
 **Prompt:** "Compare the SECI Model and Communities of Practice for a student mental health tracker. Which one is better for individual tracking and self-reflection?"
 **AI Response Summary:** Explained that SECI is ideal for converting tacit feelings into explicit logs (Externalization) and internalizing patterns through data visualization.
