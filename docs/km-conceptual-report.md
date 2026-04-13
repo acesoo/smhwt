@@ -4,7 +4,7 @@
 The mental health landscape for university students is increasingly characterized by a paradox of data: while students have more access to health-tracking tools than ever before, their actual "self-knowledge" remains low. This report proposes a Knowledge Management (KM) solution for a Student Wellness Tracker. Unlike standard logging apps, this project utilizes the **SECI Model** to facilitate the transition from fleeting emotional states to structured, actionable wellness insights. By treating the application as a "Ba" (a shared space for knowledge creation), we aim to solve the persistent issue of information fragmentation and ensure that personal data leads to genuine behavioral change.
 
 ## 2. Problem Analysis: The Knowledge Gap 
-Based on a systematic review of current mHealth research, student wellness data suffers from three primary KM failures that prevent effective self-management:
+Based on a systematic review of current mental health research, student wellness data suffers from three primary KM failures that prevent effective self-management:
 
 ### 2.1 Information Fragmentation and Silos
 Students frequently utilize multiple, disconnected platforms—tracking sleep on a wearable device, academic deadlines in a digital calendar, and mood in a private journal. This results in **siloed information**, where the user cannot see the correlation between disparate indicators. As a result, the "big data" generated remains untapped and fails to convert into "self-quantification" (Almalki et al., 2015).
