@@ -1,4 +1,4 @@
-# 🧠 S1-KM-03: Framework Selection Memo
+# Framework Selection Memo
 
 | Project | Role | Sprint | Date |
 | :--- | :--- | :--- | :--- |
@@ -6,7 +6,7 @@
 
 ---
 
-## 🎯 1. KM Problem Identification (S1-KM-01)
+## KM Problem Identification (S1-KM-01)
 
 Based on the research analysis, the primary knowledge gap for students is the inability to convert raw personal data into actionable **self-knowledge**. We have identified four critical "KM Pain Points":
 
@@ -17,17 +17,17 @@ Based on the research analysis, the primary knowledge gap for students is the in
 
 ---
 
-## ⚖️ 2. KM Framework Evaluation (S1-KM-02)
+## 2. KM Framework Evaluation (S1-KM-02)
 
-### 👥 Considered: Communities of Practice (Wenger)
+### Considered: Communities of Practice (Wenger)
 While strong for social learning, mental health is often a sensitive, private matter hindered by **stigma and labeling effects**. A communal learning structure may trigger "self-stigma," making users less likely to document honest internal states.
 
-### 🌀 Selected: SECI Model (Nonaka & Takeuchi)
+### Selected: SECI Model (Nonaka & Takeuchi)
 The **SECI Model** is a superior fit because it focuses on the internal conversion of **tacit knowledge** (unspoken feelings/internal states) into **explicit knowledge** (quantifiable data). It prioritizes individual "self-activation" over social group dynamics.
 
 ---
 
-## 🚀 3. Application as a "Ba" (Knowledge Space)
+## 3. Application as a "Ba" (Knowledge Space)
 
 Our application functions as a **"Ba"**—a secure, personalized dashboard where the interaction between the user and the system generates new insights.
 
@@ -37,7 +37,7 @@ Our application functions as a **"Ba"**—a secure, personalized dashboard where
 
 ---
 
-## 🛠️ 4. Feature Mapping for Team Integration
+## 4. Feature Mapping for Team Integration
 
 | App Feature | SECI Phase | KM Rationale |
 | :--- | :--- | :--- |
@@ -47,7 +47,7 @@ Our application functions as a **"Ba"**—a secure, personalized dashboard where
 
 ---
 
-## 📚 5. References
+## 5. References
 * **Almalki, M., Gray, K., & Sanchez, F. M. (2015).** The use of self-quantification systems for personal health information. *Health Information Science and Systems*, 3(Suppl 1), S1.
 * **Huang, H. Y., & Bashir, M. (2017).** Users' adoption of mental health apps. *JMIR mHealth and uHealth*, 5(6), e83.
 * **Nonaka, I., & Takeuchi, H. (1995).** *The Knowledge-Creating Company*. Oxford University Press.
