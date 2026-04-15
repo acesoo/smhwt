@@ -3,7 +3,7 @@
 ## 1. Executive Summary
 This document defines the Knowledge Taxonomy and Retrieval Requirements for the Student Mental Health & Wellness Tracker. It applies the **SECI Model** to ensure that raw user data is transformed into actionable self-knowledge. Our application functions as a **"Ba"** (knowledge space) where interaction bridges the gap between mere self-tracking and true self-quantification.
 
-## 2. Knowledge Taxonomy (S2-KM-01)
+## 2. Knowledge Taxonomy
 The following taxonomy is based on validated academic research regarding student stressors and coping strategies.
 
 ### 2.1 Stressors and Triggers (Externalization Phase)
@@ -27,14 +27,14 @@ These categories help the system organize fragmented data into a complex represe
 | **Avoidance** | #Denial, #SelfDistraction, #Disengagement | Distancing oneself from stressors/emotions. |
 | **Support Seeking** | #InstrumentalSupport, #EmotionalSupport | Reaching out to others for advice or comfort. |
 
-## 3. Retrieval Requirements (S2-KM-02)
+## 3. Retrieval Requirements
 To facilitate the **Combination** and **Internalization** phases, the Developer (@enzo-q) must implement the following logic in the Supabase schema:
 
 1. **Tag-Based Filtering:** The system must allow users to query logs by specific stressor tags (e.g., "Show all entries tagged #TestStress").
 2. **Data Aggregation:** The architecture must facilitate the synthesis of fragmented mood tags with disparate datasets such as sleep quality or academic performance.
 3. **Pattern Identification:** The retrieval design must allow the student to identify latent triggers, such as how #PeerStress might correlate with diminished sleep quality.
 
-## 4. References (APA 7th Edition)
+## 4. References
 * Almalki, M., Gray, K., & Sanchez, F. M. (2015). The use of self-quantification systems for personal health information. *Health Information Science and Systems*.
 * Lin, Y. M., & Chen, F. S. (2009). Academic stress inventory of students at universities and colleges of technology. *World Transactions on Engineering and Technology Education*.
 * Zhang, C., Yang, Y., & Liu, C. (2022). Knowledge management-based mental health service model. *Sustainability*.
