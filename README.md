@@ -1,4 +1,6 @@
-# 🧠 Student Mental Health & Wellness Tracker
+# THIS README IS NOT FINAL.
+
+# Student Mental Health & Wellness Tracker
 
 > A knowledge management-driven web application that helps students log moods, reflect through journaling, track wellness goals, and discover curated mental health resources.
 
@@ -26,7 +28,7 @@
 
 ## 1. Overview
 
-The **Student Mental Health & Wellness Tracker** is a web application designed to address a knowledge management problem: students often lack a structured, private space to externalize, organize, and retrieve their own mental health data over time.
+The **Student Mental Health & Wellness Tracker** is a web application designed to address a knowledge management problem: students often lack a structured, private space to externalize, organize, and reflect on their own mental health over time.
 
 This app allows students to:
 - Log their daily mood on a 1–10 scale with optional notes
@@ -64,11 +66,11 @@ _Full mapping available in [`/docs/km-architecture.md`](./docs/km-architecture.m
 
 | Role | Member | Branch |
 |---|---|---|
-| Project Manager (PM) | `[Name]` | `feature/pm-setup` |
-| Developer | `[Name]` | `feature/dev-scaffold` |
-| UX/UI Designer | `[Name]` | `feature/ux-wireframes` |
-| KM Analyst | `[Name]` | `feature/km-research` |
-| QA / Docs Lead | `[Name]` | `feature/qa-docs` |
+| Project Manager (PM) | `Ralph Anthony Biazon` | `feature/pm-setup` |
+| Developer | `Lorenzo Nheo Queñano` | `feature/dev-scaffold` |
+| UX/UI Designer | `John Pete Casapao` | `feature/ux-wireframes` |
+| KM Analyst | `Anthon Van Calban` | `feature/km-research` |
+| QA / Docs Lead | `Kim Moguer` | `feature/qa-docs` |
 
 ---
 
@@ -162,6 +164,7 @@ mental-health-wellness-tracker/
 ├── README.md
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
+├── PROMPTLOG.md
 ├── .env.example          # Template — copy to .env.local and fill in values
 └── .gitignore
 ```
@@ -180,7 +183,7 @@ We follow a **feature branch → dev → main** workflow.
 
 ### Rules
 
-- **Never push directly to `main`** — all changes require a Pull Request
+- **Never push directly to `main`, Always PR to `dev` branch** — all changes require a Pull Request and a review 
 - All PRs must have at least **1 approval** before merging
 - Branch naming format: `feature/[role]-[short-description]`
 - Commit message format: `[ISSUE-ID] Short description — reason`  
@@ -202,7 +205,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full workflow.
 | `[Name]` | KM Analyst | — | — | — |
 | `[Name]` | QA / Docs | — | — | — |
 
-_Detailed contribution log available in the [GitHub Wiki — Contribution Log](../../wiki/Contribution-Log)_
+_Detailed contribution log available in the [Contribution Log]
 
 ---
 
@@ -226,4 +229,4 @@ This project is licensed under the **MIT License** — see the [LICENSE](./LICEN
 ---
 
 _This project was built for ProfElec2 — Knowledge Management Capstone._  
-_Instructor: [Instructor Name] · Academic Year: [Year]_
+
