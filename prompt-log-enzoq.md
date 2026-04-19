@@ -109,7 +109,7 @@
 
 ## Entry 5
 
-**Date:** April 17, 2026
+**Date:** April 17, 2026  
 **Task:** S2-DEV-01 — Design Supabase schema (users, mood_logs, journal_entries, resources, wellness_goals)
 
 ### Prompt Given
@@ -121,14 +121,83 @@
 - Built-in optimizations like GIN indexes and auto-updating triggers.
 
 ### What I Changed, Rejected, or Improved
-- **Security:** Replaced deprecated `auth.role()` with `auth.uid() IS NOT NULL` and added `FORCE ROW LEVEL SECURITY` to all tables.
-- **Logic Fixes:** Updated RLS to explicitly allow `NULL` inserts for admin resources, and added missing `progress` fields to `wellness_goals`.
-- **Audit Trails:** Added missing `created_at`/`updated_at` timestamps, indexes, and triggers to `resources`.
+- **Idempotency:** Added `IF NOT EXISTS` to table and index creations so the script can be re-run safely. 
+- **Index Immutability Fix:** Fixed an issue flagged in the daily index by forcing a UTC timezone conversion (`((logged_at AT TIME ZONE 'UTC')::DATE)`) to ensure the expression is `IMMUTABLE`.
+- **Teardown Script:** Separated `DROP TABLE ... CASCADE` and `DROP FUNCTION ... CASCADE` commands from the main schema build script to prevent accidental data deletion.
+- **Organization:** Moved the RLS policies to their own dedicated file for S2-DEV-02.
 
 ### What I Learned or Decided
-- Handling `NULL` foreign keys requires an explicit `OR column IS NULL` check in RLS policies so operations don't fail silently.
-- `FORCE ROW LEVEL SECURITY` is essential to prevent accidental superuser bypasses.
-- Baking frontend requirements (like goal progress fields) into the initial schema design saves massive database migration headaches later.
+- PostgreSQL requires computed index expressions (like extracting dates from timestamps) to be strictly immutable. Relying on local server timezones fails this rule.
+- While adding `DROP TABLE` to the top of a schema file makes it idempotent, it is too dangerous for production/demo phases. A dedicated `reset-db.sql` script is the safer architectural choice.
+
+---
+
+## Entry 6
+
+**Date:** April 17, 2026  
+**Task:** S2-DEV-02 — Implement Row Level Security (RLS) policies
+
+### Prompt Given
+> "Asked how to drop the current tables to run a fresh schema, and whether I can add DROP commands directly into the `rls-policies.sql` script so I can run it safely every time I make a change."
+
+### What the AI Produced
+- Provided the CASCADE tear-down SQL script for tables and functions.
+- Warned against putting table drops in the schema file, but highly recommended dropping policies.
+- Generated a fully updated `rls-policies.sql` script with `DROP POLICY IF EXISTS` added above every policy creation.
+
+### What I Changed, Rejected, or Improved
+- Applied the AI's provided idempotency pattern, ensuring every `CREATE POLICY` is preceded by its respective `DROP POLICY IF EXISTS`.
+- Mapped all policies strictly to `auth.uid()` for isolated row-level operations.
+
+### What I Learned or Decided
+- Unlike dropping tables (which permanently destroys data), dropping and recreating RLS policies is perfectly safe. 
+- Making the RLS file completely idempotent allows the team to rapidly tweak and test security rules without throwing "policy already exists" errors in PostgreSQL.
+
+---
+
+## Entry 7
+
+**Date:** April 17, 2026  
+**Task:** S2-DEV-03 — Write ADR-003: Authentication Approach
+
+### Prompt Given
+> "Requested ADR-003 detailing our Authentication Approach, focusing on the decision to use Supabase Auth versus building a custom authentication solution."
+
+### What the AI Produced
+- Drafted Architectural Decision Record (ADR-003) for our Auth strategy.
+- Detailed the tight integration between Supabase Auth and our PostgreSQL Row Level Security.
+
+### What I Changed, Rejected, or Improved
+- Accepted the provided rationale and structure.
+- Ensured the document accurately reflected our reliance on `auth.uid()` as the foundational anchor for all database privacy.
+
+### What I Learned or Decided
+- Relying on Supabase Auth is not just a convenience choice; it is architecturally mandatory for our security model, as the database engine requires native auth context to evaluate our RLS policies securely.
+
+---
+
+## Entry 8
+
+**Date:** April 19, 2026  
+**Task:** S2-DEV-04 — Set up Vercel CI/CD deployment
+
+### Prompt Given
+> "Asked how to deploy the GitHub repo to the PM's personal Vercel account, how to fix Vercel failing to auto-detect Next.js (defaulting to 'Other'), and how to resolve a domain name conflict."
+
+### What the AI Produced
+- Explained Vercel's Free (Hobby) tier limitation regarding linking to third-party repositories.
+- Diagnosed that Vercel failed to detect Next.js because it was scanning the empty `main` branch instead of the active `dev` branch.
+- Explained that `.vercel.app` domains are globally unique and how to redirect or claim new domains.
+
+### What I Changed, Rejected, or Improved
+- Rejected the AI's CLI deployment workaround because it would break our automatic CI/CD pipeline. 
+- Instead, instructed the PM (the repo owner) to handle the initial deployment connection to preserve automatic deployments.
+- Had the PM temporarily switch the GitHub default branch from `main` to `dev` so Vercel could successfully auto-detect the framework.
+
+### What I Learned or Decided
+- Vercel's free tier essentially locks automatic GitHub CI/CD pipelines to the repository owner.
+- Vercel scans the default branch during the initial project import. If the active code is on a `dev` branch but `main` is empty, Vercel will not recognize the Next.js `package.json` file.
+- Delegating environment-level setup to the repo owner while guiding them through the configuration is the correct architectural choice for team projects on free tiers.
 
 ---
 
