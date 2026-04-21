@@ -40,7 +40,7 @@ export default function LogPage() {
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-base font-semibold text-neutral-100">Log entry</h1>
+        <h1 className="text-base font-semibold text-neutral-100">Log Entry</h1>
         <span className="text-xs text-neutral-500">{today}</span>
       </header>
 
