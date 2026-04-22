@@ -1,6 +1,6 @@
 # KM Conceptual Report: SECI-Based Mental Health Informatics
   
-## 1. INTRODUCTION
+## 1. Introduction
  
 The mental health landscape for university students is increasingly characterized by a paradox of data: while students have more access to health-tracking tools than ever before, their actual "self-knowledge" remains low. This report proposes a Knowledge Management (KM) solution for a Student Wellness Tracker. Unlike standard logging apps, this project utilizes the **SECI Model** to facilitate the transition from fleeting emotional states to structured, actionable wellness insights. By treating the application as a "Ba" (a shared space for knowledge creation), we aim to solve the persistent issue of information fragmentation and ensure that personal data leads to genuine behavioral change.
  
@@ -97,7 +97,7 @@ The SMHWT addresses this gap by operationalizing the SECI spiral as a personal k
  
 ---
  
-## 7. REFERENCES
+## 7. References
  
 - Almalki, M., Gray, K., & Sanchez, F. M. (2015). The use of self-quantification systems for personal health information: Big data management activities and prospects. *Health Information Science and Systems, 3*(Suppl 1), S1.
 - Huang, H. Y., & Bashir, M. (2017). Users' adoption of mental health apps: Examining the impact of information cues. *JMIR mHealth and uHealth, 5*(6), e83.
