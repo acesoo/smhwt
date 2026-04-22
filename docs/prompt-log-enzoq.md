@@ -201,4 +201,134 @@
 
 ---
 
+## Entry 9
+
+**Date:** April 21, 2026  
+**Task:** S3-DEV-01 — Build Supabase Auth (signup, login, logout, session persistence) & Database migrations
+
+### Prompt Given
+> "Requested implementation of Supabase Auth using the `@supabase/ssr` middleware pattern for Next.js App Router, including signup, login, and logout server actions. Additionally, asked to verify the database extensions and RLS policies for the Sprint 3 tables (Mood, Journal, Goals)."
+
+### What the AI Produced
+- Next.js `middleware.ts` configured for `@supabase/ssr` to ensure route protection and session persistence.
+- Secure Server Actions for authentication (`signUp`, `signIn`, `signOut`).
+- Confirmed the schema for `mood_logs`, `journal_entries`, and `wellness_goals` were correctly structured with strict `auth.uid()` RLS policies protecting the endpoints.
+
+### What I Changed, Rejected, or Improved
+- Ensured the middleware matcher accurately protected all internal dashboard routes while leaving the login page public.
+- Kept database modifications strict to only the tables needed for Sprint 3 to avoid feature creep.
+- Ensured timezone handling was secure for the upcoming daily log limits.
+
+### What I Learned or Decided
+- The `@supabase/ssr` middleware pattern is absolutely essential for Next.js App Router; it reliably intercepts requests to refresh auth cookies *before* rendering Server Components.
+- A solid backend foundation and a fully functioning authentication flow are mandatory prerequisites before touching the core frontend forms, as RLS requires a logged-in user to function correctly.
+
+---
+
+## Entry 10
+
+**Date:** April 21, 2026  
+**Task:** S3-DEV-02 — Build Mood Log form and its server action
+
+### Prompt Given
+> "Asked for the core backend logic, Next.js Server Actions, and a lightly styled client form for the Mood Tracker."
+
+### What the AI Produced
+- Provided the raw React hook form setup linked securely to a Supabase insert action.
+- Included basic loading, error, and success state handling.
+
+### What I Changed, Rejected, or Improved
+- Intentionally instructed the AI to provide only basic, functional Tailwind HTML. 
+- Rejected over-engineering the CSS styling at this stage to avoid doing "throwaway work" before the official UX designs and `shadcn/ui` integration.
+
+### What I Learned or Decided
+- Treating Server Actions as isolated "engine components" keeps the codebase extremely modular and easy to debug.
+
+---
+
+## Entry 11
+
+**Date:** April 21, 2026  
+**Task:** S3-DEV-03 — Build Journal Entry form and its server action
+
+### Prompt Given
+> "Requested the client component and database connection logic for the Journal Entry feature, maintaining the same unstyled, functional approach as the Mood form."
+
+### What the AI Produced
+- A text-area driven form component and a secure Supabase insertion Server Action.
+
+### What I Changed, Rejected, or Improved
+- Verified the form resets state correctly upon a successful Supabase insert to prevent accidental double-posting by the user.
+
+### What I Learned or Decided
+- Consistency in handling forms (loading -> submit -> revalidate -> reset) across tasks makes the user experience seamless, even before styles are applied.
+
+---
+
+## Entry 12
+
+**Date:** April 22, 2026  
+**Task:** S3-DEV-04 — Build Wellness Goals tracker and its server action
+
+### Prompt Given
+> "Asked to verify my commit message for building the Wellness Goals tracker and provided the 4 associated files: `wellness-goals.ts`, `wellness-goal-form.tsx`, `goal-card.tsx`, and `page.tsx`."
+
+### What the AI Produced
+- Suggested updating my commit message from a simple string to a strict Conventional Commit format (`feat: [S3-DEV-04]...`).
+
+### What I Changed, Rejected, or Improved
+- Accepted the revised commit message to maintain professional repository standards.
+- Engineered full CRUD capabilities natively utilizing Next.js Server Actions and `revalidatePath` for immediate UI updates.
+
+### What I Learned or Decided
+- Structuring the Goals feature with specific `GoalStatus` types (active, completed, abandoned) allows for clean, compartmentalized rendering on the frontend.
+
+---
+
+## Entry 13
+
+**Date:** April 22, 2026  
+**Task:** S3-DEV-05 — Initialize Shadcn UI, set up Tailwind config, and document ADR-004
+
+### Prompt Given
+> "Asked if it was safe to initialize `shadcn/ui` while maintaining current functional code. Asked for guidance on CLI prompts regarding Base vs. Radix, and which visual preset to use."
+
+### What the AI Produced
+- Explained the difference between Radix (battle-tested, accessible) and Base (newer). 
+- Explained visual presets and recommended "Maia" for its calming, rounded aesthetics.
+- Clarified that `lucide-react` is the native icon dependency for `shadcn`.
+
+### What I Changed, Rejected, or Improved
+- Chose **Radix** to guarantee we pass the strict WCAG accessibility audits mandated in Sprint 4.
+- Chose the **Maia** preset to perfectly align with the "calm, low-stimulation" mandate outlined in ADR-004.
+- Committed the generated UI utility files safely alongside the functional forms.
+
+### What I Learned or Decided
+- Adding `shadcn/ui` does not break existing Tailwind components. 
+- Initializing with a preset automatically handles CSS variable injections into `globals.css` without requiring manual theme configuration.
+
+---
+
+## Entry 14
+
+**Date:** April 22, 2026  
+**Task:** S3-DEV-06 — Update Changelog for v0.1.0 release
+
+### Prompt Given
+> "Asked for the text to add to `CHANGELOG.md` for the v0.1.0 release. Researched Keep a Changelog standards and debated including a placeholder Navigation bar."
+
+### What the AI Produced
+- Generated a `CHANGELOG.md` encompassing Sprint 1 architecture and Sprint 3 core features.
+- Initially included the Navigation bar placeholder based on earlier prompts.
+
+### What I Changed, Rejected, or Improved
+- **Rejected** listing the Navigation bar as a completed feature because it was merely a placeholder returning `404` errors. I advocated that changelogs must only reflect functional features to avoid presenting "vaporware."
+- **Improved** the file by researching standard practices and manually implementing an `## [Unreleased]` tracking section at the top of the file to stage upcoming Sprint 4 UX tasks.
+
+### What I Learned or Decided
+- The Changelog must act as a strict source of truth. If code is not deployed and functional, it does not belong in a release block. 
+- Using `[Unreleased]` creates a perfect bridge between sprints, allowing the codebase documentation to mirror the Agile board.
+
+---
+
 *This log is maintained on the `feature/dev-scaffold` branch and submitted as part of the Developer's individual deliverable.*
