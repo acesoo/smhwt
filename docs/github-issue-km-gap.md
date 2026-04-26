@@ -1,6 +1,6 @@
 # GitHub Issue KM Gap
 # Label: km
-# Assignee: @enzo-q
+# Assigned: @enzo-q
 
 **Title:**
 [KM GAP] stressor_tags / coping_tags have no enforced vocabulary — breaks Combination stage (SECI)
