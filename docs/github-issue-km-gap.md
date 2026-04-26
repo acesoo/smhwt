@@ -1,4 +1,4 @@
-# GitHub Issue KM Gap
+# GitHub Issue
 # Label: km
 # Assigned: @enzo-q
 
