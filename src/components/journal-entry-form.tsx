@@ -1,13 +1,8 @@
 "use client";
 
-import { useActionState, useRef, useState, useEffect } from "react";
-import {
-  saveJournalEntry,
-  type JournalFormState,
-} from "@/app/actions/journal-entry";
-import { STRESSOR_TAGS, COPING_TAGS } from "@/lib/taxonomy";
-
-// ── Initial state ─────────────────────────────────────────────────────────────
+import { useActionState, useEffect, useRef, useState } from "react";
+import { saveJournalEntry, type JournalFormState } from "@/app/actions/journal-entry";
+import { STRESSOR_TAG_GROUPS, COPING_TAG_GROUPS } from "@/lib/constants/tags";
 
 const initialState: JournalFormState = { success: false };
 
@@ -26,6 +21,7 @@ function TagPill({
     <button
       type="button"
       onClick={onToggle}
+      aria-pressed={selected}
       className={`
         px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150
         ${
@@ -40,45 +36,68 @@ function TagPill({
   );
 }
 
+function TagGroup({
+  category,
+  tags,
+  selected,
+  onToggle,
+}: {
+  category: string;
+  tags: readonly string[];
+  selected: Set<string>;
+  onToggle: (tag: string) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-600">
+        {category}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <TagPill
+            key={tag}
+            label={tag}
+            selected={selected.has(tag)}
+            onToggle={() => onToggle(tag)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
-/**
- * S3-DEV-03 — JournalEntryForm
- *
- * Implements the "Journal" tab from wireframe S2-UX-01.
- * Features:
- *   - Title field
- *   - Free-text reflection body (multi-line)
- *   - Combined taxonomy tag selector (Stressors + Coping Responses)
- *     Tags link journal entries to the knowledge taxonomy defined in
- *     km-architecture.md so entries are retrievable by tag in the Search screen.
- * Submits via Server Action — user_id is attached server-side from session.
- */
 export function JournalEntryForm() {
   const [state, formAction, isPending] = useActionState(
     saveJournalEntry,
     initialState
   );
   const formRef = useRef<HTMLFormElement>(null);
-
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
-  // Wrap the reset logic in a useEffect so it runs AFTER the render
-  useEffect(() => {
-    if (state.success && formRef.current) {
-      formRef.current.reset();
-      
-      // Defer state updates to the next tick to avoid the cascading render warning
-      setTimeout(() => {
-        setSelectedTags(new Set());
-      }, 0);
+  // Add this new state to track the previous action state
+  const [prevState, setPrevState] = useState(state);
+
+  // React official pattern: Reset local state during render when external state changes
+  if (state !== prevState) {
+    setPrevState(state);
+    if (state.success) {
+      setSelectedTags(new Set());
     }
-  }, [state.success]);
+  }
+
+  // Only manipulate the DOM (uncontrolled elements) inside the effect
+  useEffect(() => {
+    if (state.success) {
+      formRef.current?.reset();
+    }
+  }, [state]);
 
   function toggleTag(tag: string) {
     setSelectedTags((prev) => {
       const next = new Set(prev);
-      // Replaced the ternary operator with a standard if/else
+      // Replaced the ternary operator with a standard if/else statement
       if (next.has(tag)) {
         next.delete(tag);
       } else {
@@ -104,11 +123,7 @@ export function JournalEntryForm() {
           name="title"
           placeholder="Reflection after midterms..."
           maxLength={120}
-          className="
-            w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3
-            text-sm text-neutral-200 placeholder-neutral-500
-            focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent
-          "
+          className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
         />
       </section>
 
@@ -125,53 +140,47 @@ export function JournalEntryForm() {
           name="body"
           rows={6}
           placeholder="Today felt heavy. I kept second-guessing my answers even after I submitted..."
-          className="
-            w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3
-            text-sm text-neutral-200 placeholder-neutral-500 leading-relaxed
-            focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent
-            resize-none
-          "
+          className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder-neutral-500 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
         />
       </section>
 
-      {/* ── Tags ── */}
+      {/* ── Tags — stressors then coping, both grouped ── */}
       <section>
         <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1">
           Tags
         </label>
-        <p className="text-xs text-neutral-500 mb-3">
-          Select stressors and coping strategies that apply to this entry.
+        <p className="text-xs text-neutral-500 mb-4">
+          Tag the stressors and coping responses present in this entry.
         </p>
 
-        {/* Stressor group */}
-        <p className="text-xs text-neutral-500 mb-2">Stressors</p>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {STRESSOR_TAGS.map((tag) => (
-            <TagPill
-              key={tag}
-              label={tag}
-              selected={selectedTags.has(tag)}
-              onToggle={() => toggleTag(tag)}
+        <p className="text-xs font-semibold text-neutral-500 mb-3">Stressors</p>
+        <div className="space-y-4 mb-6">
+          {STRESSOR_TAG_GROUPS.map((group) => (
+            <TagGroup
+              key={group.category}
+              category={group.category}
+              tags={group.tags}
+              selected={selectedTags}
+              onToggle={toggleTag}
             />
           ))}
         </div>
 
-        {/* Coping group */}
-        <p className="text-xs text-neutral-500 mb-2">Coping responses</p>
-        <div className="flex flex-wrap gap-2">
-          {COPING_TAGS.map((tag) => (
-            <TagPill
-              key={tag}
-              label={tag}
-              selected={selectedTags.has(tag)}
-              onToggle={() => toggleTag(tag)}
+        <p className="text-xs font-semibold text-neutral-500 mb-3">Coping responses</p>
+        <div className="space-y-4">
+          {COPING_TAG_GROUPS.map((group) => (
+            <TagGroup
+              key={group.category}
+              category={group.category}
+              tags={group.tags}
+              selected={selectedTags}
+              onToggle={toggleTag}
             />
           ))}
         </div>
 
-        {/* Selected tags preview */}
         {selectedTags.size > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
+          <div className="mt-4 flex flex-wrap gap-1.5">
             {Array.from(selectedTags).map((tag) => (
               <span
                 key={tag}
@@ -191,7 +200,7 @@ export function JournalEntryForm() {
         />
       </section>
 
-      {/* ── Feedback Messages ── */}
+      {/* ── Feedback ── */}
       {state.error && (
         <p className="text-red-400 text-sm bg-red-950/40 border border-red-800 rounded-lg px-4 py-2">
           {state.error}
@@ -207,11 +216,7 @@ export function JournalEntryForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="
-          w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150
-          bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700
-          disabled:opacity-40 disabled:cursor-not-allowed
-        "
+        className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {isPending ? "Saving..." : "Save journal entry"}
       </button>

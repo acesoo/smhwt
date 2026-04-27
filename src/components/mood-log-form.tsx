@@ -1,20 +1,14 @@
 "use client";
 
-import { useActionState, useRef, useState, useEffect } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { saveMoodLog, type MoodLogFormState } from "@/app/actions/mood-log";
-import {
-  STRESSOR_TAGS,
-  COPING_TAGS,
-  ACADEMIC_IMPACT_OPTIONS,
-} from "@/lib/taxonomy";
-
-// ── Initial state ─────────────────────────────────────────────────────────────
+import { STRESSOR_TAG_GROUPS, COPING_TAG_GROUPS } from "@/lib/constants/tags";
+import { ACADEMIC_IMPACT_OPTIONS } from "@/lib/taxonomy";
 
 const initialState: MoodLogFormState = { success: false };
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-/** A single selectable tag pill */
 function TagPill({
   label,
   selected,
@@ -28,6 +22,7 @@ function TagPill({
     <button
       type="button"
       onClick={onToggle}
+      aria-pressed={selected}
       className={`
         px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150
         ${
@@ -42,21 +37,38 @@ function TagPill({
   );
 }
 
+function TagGroup({
+  category,
+  tags,
+  selected,
+  onToggle,
+}: {
+  category: string;
+  tags: readonly string[];
+  selected: Set<string>;
+  onToggle: (tag: string) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-600">
+        {category}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <TagPill
+            key={tag}
+            label={tag}
+            selected={selected.has(tag)}
+            onToggle={() => onToggle(tag)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
-/**
- * S3-DEV-02 — MoodLogForm
- *
- * Implements the "Mood Log" tab from wireframe S2-UX-01.
- * Features:
- *   - 1–10 mood score selector (numeric buttons matching wireframe)
- *   - Optional free-text note
- *   - Sleep quality (1–5 scale)
- *   - Academic impact (None / Minor / Moderate / Severe)
- *   - Stressor tag multi-select (from KM taxonomy)
- *   - Coping response tag multi-select (from KM taxonomy)
- * Submits via Server Action — user_id is attached server-side from session.
- */
 export function MoodLogForm() {
   const [state, formAction, isPending] = useActionState(
     saveMoodLog,
@@ -64,36 +76,38 @@ export function MoodLogForm() {
   );
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Local state for interactive selections (not sent via formData directly —
-  // we serialize them into hidden inputs before submit)
   const [moodScore, setMoodScore] = useState<number | null>(null);
   const [sleepQuality, setSleepQuality] = useState<number | null>(null);
   const [academicImpact, setAcademicImpact] = useState("None");
-  const [selectedStressors, setSelectedStressors] = useState<Set<string>>(
-    new Set()
-  );
+  const [selectedStressors, setSelectedStressors] = useState<Set<string>>(new Set());
   const [selectedCoping, setSelectedCoping] = useState<Set<string>>(new Set());
 
-  // Wrap the reset logic in a useEffect so it runs AFTER the render
-  useEffect(() => {
-    if (state.success && formRef.current) {
-      formRef.current.reset();
-      
-      // Defer state updates to the next tick to avoid the cascading render warning
-      setTimeout(() => {
-        setMoodScore(null);
-        setSleepQuality(null);
-        setAcademicImpact("None");
-        setSelectedStressors(new Set());
-        setSelectedCoping(new Set());
-      }, 0);
+  // Add this new state to track the previous action state
+  const [prevState, setPrevState] = useState(state);
+
+  // React official pattern: Reset local state during render when external state changes
+  if (state !== prevState) {
+    setPrevState(state);
+    if (state.success) {
+      setMoodScore(null);
+      setSleepQuality(null);
+      setAcademicImpact("None");
+      setSelectedStressors(new Set());
+      setSelectedCoping(new Set());
     }
-  }, [state.success]);
+  }
+
+  // Only manipulate the DOM (uncontrolled elements) inside the effect
+  useEffect(() => {
+    if (state.success) {
+      formRef.current?.reset();
+    }
+  }, [state]);
 
   function toggleStressor(tag: string) {
     setSelectedStressors((prev) => {
       const next = new Set(prev);
-      // Replaced the ternary operator with a standard if/else
+      // Replaced the ternary operator with a standard if/else statement
       if (next.has(tag)) {
         next.delete(tag);
       } else {
@@ -106,7 +120,7 @@ export function MoodLogForm() {
   function toggleCoping(tag: string) {
     setSelectedCoping((prev) => {
       const next = new Set(prev);
-      // Replaced the ternary operator with a standard if/else
+      // Replaced the ternary operator with a standard if/else statement
       if (next.has(tag)) {
         next.delete(tag);
       } else {
@@ -129,6 +143,7 @@ export function MoodLogForm() {
               key={n}
               type="button"
               onClick={() => setMoodScore(n)}
+              aria-pressed={moodScore === n}
               className={`
                 w-9 h-9 rounded-lg text-sm font-semibold transition-all duration-150
                 ${
@@ -146,13 +161,7 @@ export function MoodLogForm() {
           <span>Very low</span>
           <span>Very high</span>
         </div>
-        {/* Hidden input carries the selected score into formData */}
-        <input
-          type="hidden"
-          name="mood_score"
-          value={moodScore ?? ""}
-          readOnly
-        />
+        <input type="hidden" name="mood_score" value={moodScore ?? ""} readOnly />
       </section>
 
       {/* ── Optional Note ── */}
@@ -168,12 +177,7 @@ export function MoodLogForm() {
           name="note"
           rows={2}
           placeholder="Feeling okay, a bit tired after class..."
-          className="
-            w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3
-            text-sm text-neutral-200 placeholder-neutral-500
-            focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent
-            resize-none
-          "
+          className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
         />
       </section>
 
@@ -188,6 +192,7 @@ export function MoodLogForm() {
               key={n}
               type="button"
               onClick={() => setSleepQuality(n)}
+              aria-pressed={sleepQuality === n}
               className={`
                 flex-1 py-2 rounded-lg text-sm font-semibold transition-all duration-150
                 ${
@@ -205,12 +210,7 @@ export function MoodLogForm() {
           <span>Very poor</span>
           <span>Excellent</span>
         </div>
-        <input
-          type="hidden"
-          name="sleep_quality"
-          value={sleepQuality ?? ""}
-          readOnly
-        />
+        <input type="hidden" name="sleep_quality" value={sleepQuality ?? ""} readOnly />
       </section>
 
       {/* ── Academic Impact ── */}
@@ -224,6 +224,7 @@ export function MoodLogForm() {
               key={value}
               type="button"
               onClick={() => setAcademicImpact(value)}
+              aria-pressed={academicImpact === value}
               className={`
                 px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150
                 ${
@@ -237,26 +238,22 @@ export function MoodLogForm() {
             </button>
           ))}
         </div>
-        <input
-          type="hidden"
-          name="academic_impact"
-          value={academicImpact}
-          readOnly
-        />
+        <input type="hidden" name="academic_impact" value={academicImpact} readOnly />
       </section>
 
-      {/* ── Stressor Tags ── */}
+      {/* ── Stressor Tags — grouped by KM category ── */}
       <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
           Tag your stressors
         </label>
-        <div className="flex flex-wrap gap-2">
-          {STRESSOR_TAGS.map((tag) => (
-            <TagPill
-              key={tag}
-              label={tag}
-              selected={selectedStressors.has(tag)}
-              onToggle={() => toggleStressor(tag)}
+        <div className="space-y-4">
+          {STRESSOR_TAG_GROUPS.map((group) => (
+            <TagGroup
+              key={group.category}
+              category={group.category}
+              tags={group.tags}
+              selected={selectedStressors}
+              onToggle={toggleStressor}
             />
           ))}
         </div>
@@ -268,18 +265,19 @@ export function MoodLogForm() {
         />
       </section>
 
-      {/* ── Coping Response Tags ── */}
+      {/* ── Coping Response Tags — grouped by KM category ── */}
       <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
           Coping response
         </label>
-        <div className="flex flex-wrap gap-2">
-          {COPING_TAGS.map((tag) => (
-            <TagPill
-              key={tag}
-              label={tag}
-              selected={selectedCoping.has(tag)}
-              onToggle={() => toggleCoping(tag)}
+        <div className="space-y-4">
+          {COPING_TAG_GROUPS.map((group) => (
+            <TagGroup
+              key={group.category}
+              category={group.category}
+              tags={group.tags}
+              selected={selectedCoping}
+              onToggle={toggleCoping}
             />
           ))}
         </div>
@@ -291,7 +289,7 @@ export function MoodLogForm() {
         />
       </section>
 
-      {/* ── Feedback Messages ── */}
+      {/* ── Feedback ── */}
       {state.error && (
         <p className="text-red-400 text-sm bg-red-950/40 border border-red-800 rounded-lg px-4 py-2">
           {state.error}
@@ -307,11 +305,7 @@ export function MoodLogForm() {
       <button
         type="submit"
         disabled={isPending || !moodScore || !sleepQuality}
-        className="
-          w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150
-          bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700
-          disabled:opacity-40 disabled:cursor-not-allowed
-        "
+        className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {isPending ? "Saving..." : "Save mood log"}
       </button>
