@@ -1,6 +1,6 @@
 # Standup Note — Week 2
 
-**Date:** Week of Apr 14–18, 2026
+**Date:** Apr 14–18, 2026
 **Sprint:** S2 — Design (closing) · S3 — Build Sprint 1 (opening)
 **Facilitator:** Ralph Anthony B. Biazon (@acesoo) — Project Manager
 **Sprint Task:** S2-PM-02

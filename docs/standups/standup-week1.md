@@ -1,9 +1,9 @@
 # Standup Note — Week 1
 
-**Date:** 2026-04-08 to 2026-04-13
-**Facilitator:** Ralph Anthony B. Biazon (PM)
+**Date:** Apr 6–13, 2026
 **Sprint:** S1 — Kickoff & Discovery
-
+**Facilitator:** Ralph Anthony B. Biazon (@acesoo) — Project Manager
+**Sprint Task:** S1-PM-04
 ---
 
 ## Attendance
