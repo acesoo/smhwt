@@ -12,7 +12,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    href: "/",
+    href: "/dashboard",
     label: "Home",
     ariaLabel: "Go to dashboard home",
     icon: (active) => (
@@ -108,9 +108,9 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    href: "/search",
-    label: "Search",
-    ariaLabel: "Search and retrieve past entries",
+    href: "/goals",
+    label: "Goals",
+    ariaLabel: "Go to wellness goals",
     icon: (active) => (
       <svg
         width="22"
@@ -121,25 +121,30 @@ const navItems: NavItem[] = [
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          cx="9.5" cy="9.5" r="5.5"
+          cx="11" cy="11" r="7"
           stroke="currentColor"
           strokeWidth={active ? "1.8" : "1.4"}
           fill={active ? "currentColor" : "none"}
           fillOpacity={active ? "0.12" : "0"}
         />
-        <path
-          d="M13.5 13.5L18 18"
+        <circle
+          cx="11" cy="11" r="3"
           stroke="currentColor"
           strokeWidth={active ? "1.8" : "1.4"}
-          strokeLinecap="round"
+          fill={active ? "currentColor" : "none"}
+          fillOpacity={active ? "0.2" : "0"}
+        />
+        <circle
+          cx="11" cy="11" r="1"
+          fill="currentColor"
         />
       </svg>
     ),
   },
   {
-    href: "/profile",
-    label: "Profile",
-    ariaLabel: "Go to your profile and settings",
+    href: "/resources",
+    label: "Resources",
+    ariaLabel: "Browse mental health resources",
     icon: (active) => (
       <svg
         width="22"
@@ -149,15 +154,21 @@ const navItems: NavItem[] = [
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <circle
-          cx="11" cy="7.5" r="3.5"
+        <rect
+          x="4" y="3" width="9" height="12" rx="2"
           stroke="currentColor"
           strokeWidth={active ? "1.8" : "1.4"}
           fill={active ? "currentColor" : "none"}
           fillOpacity={active ? "0.12" : "0"}
         />
         <path
-          d="M4 19c0-3.866 3.134-7 7-7s7 3.134 7 7"
+          d="M7 7h3M7 10h3"
+          stroke="currentColor"
+          strokeWidth={active ? "1.8" : "1.4"}
+          strokeLinecap="round"
+        />
+        <path
+          d="M13 7h2a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-1"
           stroke="currentColor"
           strokeWidth={active ? "1.8" : "1.4"}
           strokeLinecap="round"
