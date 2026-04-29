@@ -1,21 +1,21 @@
 # Decision Log
 
-**Project:** Student Mental Health & Wellness Tracker
-**Maintained by:** acesoo - Project Manager
+**Project:** Student Mental Health & Wellness Tracker (SMHWT)
+**Maintained by:** Ralph Anthony B. Biazon (acesoo - Project Manager)
 
 ---
 
-**SPRINT 1** Entry #1
+**Kickoff and Discovery (S1)** Entry #1
 
 | # | Date | Decision Made | Options Considered | Who Was Consulted | Outcome |
 |---|------|--------------|-------------------|-------------------|---------|
 | 1 | 2026-04-08 | Project topic confirmed: Student Mental Health & Wellness Tracker | (1) Mental Health Tracker — addresses a real KM problem (students losing track of mood patterns, coping strategies, and resources); (2) Study Habit Tracker — more generic, less KM depth; (3) Campus Resource Directory — too static, limited KM value | All members | Chose Student Mental Health & Wellness Tracker — strongest KM problem fit, supports knowledge capture (journaling), retrieval (resource library), and reflection (mood trends) |
 | 2 | 2026-04-08 | Backend: Supabase | (1) Supabase — built-in Auth, Postgres DB, Row Level Security, free tier, easy JS client; (2) Firebase — real-time sync but NoSQL limits relational queries needed for taxonomy; (3) Plain Postgres on Railway — more control but no built-in Auth, higher setup cost for team | Developer, PM | Chose Supabase — built-in Auth removes one build layer, RLS enforces per-user data access which fits the KM privacy requirements, free tier covers project scope |
-| 3 | 2026-04-08 | Deployment: Vercel | (1) Vercel — native Next.js support, auto-deploy on push to main, free tier, preview URLs per PR; (2) Render — good for backend services but slower cold starts; (3) GitHub Pages — static only, cannot host Next.js with API routes | Developer, PM | Chose Vercel — tightest integration with Next.js App Router, preview deployments per PR help QA Lead test before merge 
+| 3 | 2026-04-08 | Deployment: Vercel | (1) Vercel — native Next.js support, auto-deploy on push to main, free tier, preview URLs per PR; (2) Render — good for backend services but slower cold starts; (3) GitHub Pages — static only, cannot host Next.js with API routes | Developer, PM | Chose Vercel — tightest integration with Next.js App Router, preview deployments per PR help QA Lead test before merge |
 
 ---
 
-**SPRINT 2** Entry #2
+**Design (S2)** Entry #2
 
 | # | Date | Decision Made | Options Considered | Who Consulted | Outcome |
 |---|------|---------------|--------------------|---------------|---------|
@@ -23,9 +23,20 @@
 
 ---
 
-**SPRINT 3** Entries #3 and #4
+**Build Sprint 1 (S3)** Entries #3 and #4
 
 | # | Date | Decision Made | Options Considered | Who Was Consulted | Outcome |
 |---|------|--------------|-------------------|-------------------|---------|
 | 3 | 2026-04-19 | Feature build order for Sprint 3: Auth → Mood Tracker → Journal → Wellness Goals | (1) Build Auth + Mood Tracker + Journal + Wellness Goals (chosen) — covers the core knowledge capture loop and maps directly to SECI Externalization (journaling) and Internalization (goal tracking); (2) Build Auth + Resource Library first — provides retrieval value but delays personal knowledge capture which is the KM core; (3) Build all 5 features simultaneously — rejected due to integration complexity and risk of nothing working end-to-end by sprint close | All members — agreed in Week 2 standup | Chose Option 1. Auth built first as hard dependency for all features. Mood Tracker and Journal implement primary KM capture functions. Wellness Goals completes the personal knowledge loop. Resource Library deferred to Sprint 4. KM rationale: build order follows SECI — Mood Tracker (Externalization), Journal (Combination), Wellness Goals (Internalization), Resource Library (Socialization, Sprint 4). |
 | 4 | 2026-04-19 | Desktop / responsive layout approach | (1) Mobile-only — ship with only Sprint 2 mobile wireframes, no desktop support. Rejected — PC browser would show a narrow mobile layout which looks unfinished and reduces usability for students on laptops; (2) Responsive-first with desktop breakpoints added in Sprint 3 (chosen) — jpcasapao extends each mobile wireframe to a desktop breakpoint using Tailwind CSS responsive prefixes (md: and lg:); (3) Desktop-first redesign — rejected as it would require redoing all Sprint 2 wireframes with no time available given May 5–10 defense | jpcasapao raised the question in Week 2 standup. All members consulted. | Chose Option 2. Mobile layouts from Sprint 2 remain valid. jpcasapao adds desktop breakpoints to each Sprint 3 component. No Sprint 2 wireframes need to be redrawn. KM rationale: a KM app used by students must work on both mobile (knowledge capture on the go) and desktop (reviewing trends and resources on laptop) — responsive design ensures the KM functions work across both contexts. |
+
+---
+
+**Build Sprint 2 (S4)** Entries #5–#8
+
+| # | Date | Decision Made | Options Considered | Who Was Consulted | Outcome |
+|---|------|--------------|-------------------|-------------------|---------|
+| 5 | 2026-04-29 | Redo Sprint 2 wireframes — existing wireframes had multiple issues: layouts did not reflect features as actually built, desktop breakpoints from Decision #4 were not incorporated, and some screens were missing KM annotations required for submission | (1) Keep existing wireframes and update only the annotations — rejected; the layout structure itself was wrong and patching annotations on top of incorrect layouts would not produce accurate documentation; (2) Redo all wireframes from scratch to match the live build, add desktop breakpoints, and complete missing KM annotations (chosen); (3) Skip wireframe update and document the discrepancy in the Design Rationale — rejected; wireframes are a graded individual deliverable for @jpcasapao and must reflect the actual app | @jpcasapao (UX Designer), @enzo-q (Developer), PM | Chose Option 2. @jpcasapao will redo all wireframes to match the current state of the app, add PC/desktop breakpoint layouts for each key screen, and ensure every wireframe carries a complete KM annotation. Wireframes must be committed to `/docs/wireframes/` before the Polish & Docs phase begins. This decision supersedes the original Sprint 2 wireframe set. |
+| 6 | 2026-04-29 | Enforce tag taxonomy as Supabase enum arrays — tags in `journal_entries` and `resources` were being stored as free text input, which broke the structured taxonomy defined in `km-architecture.md` and flagged by @anthoncalban | (1) Keep free text and add client-side validation only — rejected; free text in the database allows inconsistent values (e.g., `#academic` vs `#Academic` vs `academic`) that would break taxonomy-based filtering and undermine the KM architecture; (2) Enforce taxonomy as enum arrays in Supabase at the database level (chosen) — consistent with what was agreed in Decision #4 and with the schema design in Sprint 2; (3) Create a separate `tags` lookup table with foreign keys — more normalized but adds join complexity with no benefit at current project scale | @anthoncalban (KM Analyst) raised the concern, @enzo-q (Developer), PM | Chose Option 2. @enzo-q enforced the five stressor categories (`#Academic`, `#Social`, `#Institutional`, `#Personal`, `#Digital`) and four coping categories as Supabase enum arrays on the relevant columns. Free text tag input is no longer accepted at the database level. This aligns the implementation with the taxonomy agreed in Decision #4 and ensures Search & Retrieve filtering works correctly. |
+| 7 | 2026-04-29 | Deploy project to Vercel production environment | (1) Deploy to Vercel via GitHub integration with auto-deploy on push to `main` (chosen) — consistent with Decision #3, preview URLs available per PR for QA testing; (2) Defer deployment to Polish & Docs phase — rejected; QA Lead needs a live URL to execute test cases and file bug reports during Build Sprint 2; (3) Deploy to Render as a fallback — rejected; team has already configured Vercel environment variables and switching platforms mid-project adds unnecessary risk | @enzo-q (Developer), PM | Deployed to Vercel. Live URL confirmed working end-to-end. Supabase environment variables added to Vercel dashboard — not committed to repo. URL pasted into `README.md`. Auto-deploy on push to `main` is active. @kimmoguer can now execute all 10 test cases against the live deployment. |
+| 8 | 2026-04-29 | Defer UI polish and UX corrections to after core feature completion — @acesoo (PM) and @enzo-q (Developer) identified during integration that several UI elements were not user-friendly or visually correct on the live build | (1) Fix UI issues immediately during Build Sprint 2 alongside feature development — rejected; Resource Library, Dashboard, and Profile tabs are still being built; making UI fixes now risks breaking layouts that are still changing; (2) Defer all UI polish to after Resource Library, Dashboard, and Profile tabs are fully implemented (chosen) — fixes are applied on a stable, complete feature set, reducing rework; (3) Assign UI fixes to a separate hotfix branch immediately — rejected; creates merge conflict risk while core features are still in active development | @acesoo (PM), @enzo-q (Developer) | Chose Option 2. UI polish is deferred until Resource Library, Dashboard tab, and Profile tab are fully implemented and integrated into `dev`. Once complete, @jpcasapao will lead a UI correction pass with @enzo-q. Target: UI corrections completed before end of Build Sprint 2 / start of Polish & Docs phase. KM rationale: a KM tool must prioritize usability for knowledge retrieval and capture — UI polish is not cosmetic but affects whether users can access and record knowledge effectively. |
