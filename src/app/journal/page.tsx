@@ -1,9 +1,9 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { MoodLogForm } from "@/components/mood-log-form";
+import { JournalEntryForm } from "@/components/journal-entry-form";
 import BottomNav from "@/components/BottomNav";
 
-export const metadata = { title: "Mood Log — SMHWT" };
+export const metadata = { title: "Journal — SMHWT" };
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {
@@ -14,10 +14,11 @@ function formatDate(date: Date): string {
 }
 
 /**
- * /log — Mood Log entry page.
- * Journal entries have their own page at /journal (S3-DEV-03).
+ * /journal — Journal reflection entry page.
+ * Separated from /log per UX decision: mood logging and journaling
+ * are distinct knowledge externalization acts (SECI model).
  */
-export default function LogPage() {
+export default function JournalPage() {
   const today = formatDate(new Date());
 
   return (
@@ -30,12 +31,12 @@ export default function LogPage() {
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-base font-semibold text-neutral-100">Mood log</h1>
+        <h1 className="text-base font-semibold text-neutral-100">Journal</h1>
         <span className="text-xs text-neutral-500">{today}</span>
       </header>
 
       <main className="px-4 pt-5 pb-32">
-        <MoodLogForm />
+        <JournalEntryForm />
       </main>
 
       <BottomNav />
