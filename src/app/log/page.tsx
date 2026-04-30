@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MoodLogForm } from "@/components/mood-log-form";
 import { JournalEntryForm } from "@/components/journal-entry-form";
+import { MoodInputWidget } from "@/components/MoodInputWidget";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -27,6 +28,7 @@ function formatDate(date: Date): string {
  */
 export default function LogPage() {
   const [activeTab, setActiveTab] = useState<"mood" | "journal">("mood");
+  const [moodScore, setMoodScore] = useState<number | null>(null);
   const today = formatDate(new Date());
 
   return (
@@ -50,10 +52,9 @@ export default function LogPage() {
           onClick={() => setActiveTab("mood")}
           className={`
             flex-1 py-2 rounded-lg text-sm font-semibold transition-all duration-150
-            ${
-              activeTab === "mood"
-                ? "bg-neutral-950 text-neutral-100 shadow"
-                : "text-neutral-400 hover:text-neutral-200"
+            ${activeTab === "mood"
+              ? "bg-neutral-950 text-neutral-100 shadow"
+              : "text-neutral-400 hover:text-neutral-200"
             }
           `}
         >
@@ -63,10 +64,9 @@ export default function LogPage() {
           onClick={() => setActiveTab("journal")}
           className={`
             flex-1 py-2 rounded-lg text-sm font-semibold transition-all duration-150
-            ${
-              activeTab === "journal"
-                ? "bg-neutral-950 text-neutral-100 shadow"
-                : "text-neutral-400 hover:text-neutral-200"
+            ${activeTab === "journal"
+              ? "bg-neutral-950 text-neutral-100 shadow"
+              : "text-neutral-400 hover:text-neutral-200"
             }
           `}
         >
@@ -75,8 +75,18 @@ export default function LogPage() {
       </div>
 
       {/* ── Form Area ── */}
-      <main className="px-4 pb-32">
-        {activeTab === "mood" ? <MoodLogForm /> : <JournalEntryForm />}
+      <main className="px-4 pb-32 space-y-6">
+        {activeTab === "mood" ? (
+          <>
+            <MoodInputWidget
+              selectedScore={moodScore}
+              onMoodSelect={(score) => setMoodScore(score)}
+            />
+            <MoodLogForm />
+          </>
+        ) : (
+          <JournalEntryForm />
+        )}
       </main>
 
       {/* ── Bottom Nav ── */}
@@ -97,10 +107,9 @@ export default function LogPage() {
             href={href}
             className={`
               text-xs font-medium transition-colors
-              ${
-                href === "/log"
-                  ? "text-blue-400"
-                  : "text-neutral-500 hover:text-neutral-300"
+              ${href === "/log"
+                ? "text-blue-400"
+                : "text-neutral-500 hover:text-neutral-300"
               }
             `}
           >
