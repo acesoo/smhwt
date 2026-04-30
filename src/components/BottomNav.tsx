@@ -57,7 +57,7 @@ const navItems: NavItem[] = [
   },
   {
     href: "/log",
-    label: "Log",
+    label: "Mood Log",
     ariaLabel: "Go to mood log entry",
     icon: (active) => (
       <svg
@@ -142,9 +142,9 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    href: "/resources",
-    label: "Resources",
-    ariaLabel: "Browse mental health resources",
+    href: "/search",
+    label: "Search",
+    ariaLabel: "Search and retrieve past entries",
     icon: (active) => (
       <svg
         width="22"
@@ -154,21 +154,15 @@ const navItems: NavItem[] = [
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <rect
-          x="4" y="3" width="9" height="12" rx="2"
+        <circle
+          cx="9.5" cy="9.5" r="5.5"
           stroke="currentColor"
           strokeWidth={active ? "1.8" : "1.4"}
           fill={active ? "currentColor" : "none"}
           fillOpacity={active ? "0.12" : "0"}
         />
         <path
-          d="M7 7h3M7 10h3"
-          stroke="currentColor"
-          strokeWidth={active ? "1.8" : "1.4"}
-          strokeLinecap="round"
-        />
-        <path
-          d="M13 7h2a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-1"
+          d="M13.5 13.5L18 18"
           stroke="currentColor"
           strokeWidth={active ? "1.8" : "1.4"}
           strokeLinecap="round"
@@ -202,7 +196,9 @@ export default function BottomNav() {
       >
         {navItems.map(({ href, label, ariaLabel, icon }) => {
           const isActive =
-            href === "/" ? pathname === "/" : pathname.startsWith(href);
+            href === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname.startsWith(href);
 
           return (
             <li key={href} role="listitem" className="flex-1">
