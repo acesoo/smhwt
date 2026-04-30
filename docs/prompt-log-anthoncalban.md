@@ -78,10 +78,22 @@
 
 ---
 
-## Summary of KM Contributions (Updated Sprint 3)
+## Sprint 4: Build Sprint 2 (Weeks 5–6)
+
+#### Prompt 10: Taxonomy Expansion for Peer Support Forum (S4-KM-01)
+**User Intent:** Updating `km-architecture.md` to account for the newly scoped Peer Support Forum feature — a safe, anonymous space where students share stories and coping resources — and ensuring the full SECI spiral is represented in the architecture.
+**Prompt:** "The project now includes a Peer Support Forum where students share their stories. The existing taxonomy covers Externalization and Combination but not Socialization. Help me extend `km-architecture.md` to include a forum tag vocabulary and update the SECI-to-feature mapping to reflect the Socialization stage. Also explain how Communities of Practice applies to the forum layer without replacing SECI for the private features."
+**AI Tool:** Claude
+**AI Response Summary:** Extended the taxonomy with a third layer — Peer Forum Content Tags (`forum_tags`) — covering four categories: Shared Experience, Peer Advice, Resource Sharing, and Community Support, with 12 specific tags for the `forum_posts` table. Updated the SECI-to-feature mapping table to include Socialization as a first-class row mapped to the Peer Support Forum. Added Section 5 (Why Two Frameworks) to `km-architecture.md`, articulating why Communities of Practice applies at the anonymous social layer while SECI governs the private individual features — a dual-framework design where the two are complementary rather than competing. Also included a developer note to @enzo-q specifying the `forum_posts` schema requirements (`forum_tags TEXT[]`, `is_anonymous BOOLEAN DEFAULT true`, and RLS anonymity enforcement).
+
+---
+
+## Summary of KM Contributions (Updated Sprint 4)
 - **Theory-to-Feature Mapping:** Successfully operationalized the **SECI Model** by mapping core app features (Mood Tracker, Journal, Dashboard, Goals) to specific knowledge conversion stages. This moved the project from a "passive tracker" to an active **Knowledge Management System**.
 - **Conceptual Infrastructure:** Defined and documented the application as a **"Cyber Ba"**—a secure, private knowledge space specifically designed to facilitate the transition from tacit emotional states to explicit, actionable data.
 - **Academic Validation:** Authored the first two major sections of the **KM Conceptual Report**, integrating 5 academic sources (including Nonaka, Takeuchi, and Almalki) to justify the project's technical architecture.
 - **Technical Oversight (Audit):** Completed the **Technical Audit (S3-KM-03)** by reviewing enzo-q's migration files against `km-architecture.md`, confirming that Auth/RLS and mood log constraints were correctly implemented, and identifying a critical KM gap in the tag vocabulary enforcement that breaks the Combination stage.
 - **Gap Documentation:** Filed a GitHub Issue (label: `km`, assigned to @enzo-q) formally documenting the uncontrolled tag vocabulary gap, including the affected columns, the SECI stage it breaks, the KM architecture requirement it violates, and the acceptance criteria for the fix.
+- **Taxonomy Expansion:** Extended `km-architecture.md` to include a third taxonomy layer — Peer Forum Content Tags — for the Socialization stage, completing the full SECI spiral across all four stages within the application architecture.
+- **Dual-Framework Design:** Integrated **Communities of Practice** (Wenger, 1998) at the anonymous peer forum layer alongside the existing SECI model, and formally documented the rationale for why the two frameworks are complementary rather than competing.
 - **Data Integrity:** Ensured that the "Externalization" phase of the app uses a structured ontology (standardized tags) rather than fragmented text, enabling higher-order "Combination" (analytics) in future sprints.
