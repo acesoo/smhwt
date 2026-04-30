@@ -80,7 +80,7 @@
 
 ## Sprint 4: Build Sprint 2 (Weeks 5–6)
 
-#### Prompt 10: Taxonomy Expansion for Peer Support Forum (S4-KM-01)
+#### Prompt 10: Taxonomy Expansion for Peer Support Forum (S4-KM-02)
 **User Intent:** Updating `km-architecture.md` to account for the newly scoped Peer Support Forum feature — a safe, anonymous space where students share stories and coping resources — and ensuring the full SECI spiral is represented in the architecture.
 **Prompt:** "The project now includes a Peer Support Forum where students share their stories. The existing taxonomy covers Externalization and Combination but not Socialization. Help me extend `km-architecture.md` to include a forum tag vocabulary and update the SECI-to-feature mapping to reflect the Socialization stage. Also explain how Communities of Practice applies to the forum layer without replacing SECI for the private features."
 **AI Tool:** Claude
@@ -88,7 +88,15 @@
 
 ---
 
-## Summary of KM Contributions (Updated Sprint 4)
+#### Prompt 11: KM Report Sections 8 & 9 — Framework-to-App Mapping and Knowledge Architecture (S4-KM-01)
+**User Intent:** Completing S4-KM-01 by appending Sections 8 and 9 to `km-report.md` — the Framework-to-App Mapping table and the Knowledge Architecture section — as required by the sprint plan.
+**Prompt:** "Write KM Report Sections 3 and 4 (Framework-to-App Mapping using a table, and Knowledge Architecture). Append to km-report.md. Include the Peer Support Forum in the mapping, the dual-framework justification, the three-layer taxonomy, the retrieval architecture, and the full knowledge flow."
+**AI Tool:** Claude
+**AI Response Summary:** Appended two fully developed sections to `km-report.md`. Section 8 (Framework-to-App Mapping) contains a complete table mapping all four SECI stages and the Ba enabling layer to specific app features and actual component filenames from enzo-q's codebase, plus a dual-framework justification table explaining why Communities of Practice applies at the forum layer while SECI governs private features. Section 9 (Knowledge Architecture) covers the Ba implementation via Supabase Auth + RLS, the three-layer taxonomy enforcement (stressor tags, coping tags, forum tags), a retrieval architecture table detailing GIN indexes and cross-indicator query logic, and a knowledge flow diagram tracing the full SECI spiral from Socialization through Internalization. References updated to 10 sources including Wenger (1998) and Fernández-Martin et al. (2022).
+
+---
+
+## Summary of KM Contributions (Updated Sprint 4 — S4-KM-01)
 - **Theory-to-Feature Mapping:** Successfully operationalized the **SECI Model** by mapping core app features (Mood Tracker, Journal, Dashboard, Goals) to specific knowledge conversion stages. This moved the project from a "passive tracker" to an active **Knowledge Management System**.
 - **Conceptual Infrastructure:** Defined and documented the application as a **"Cyber Ba"**—a secure, private knowledge space specifically designed to facilitate the transition from tacit emotional states to explicit, actionable data.
 - **Academic Validation:** Authored the first two major sections of the **KM Conceptual Report**, integrating 5 academic sources (including Nonaka, Takeuchi, and Almalki) to justify the project's technical architecture.
