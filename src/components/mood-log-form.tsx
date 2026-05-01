@@ -67,29 +67,34 @@ function TagGroup({
   );
 }
 
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+// 1. ADDED: Interface to accept moodScore from the designer's wrapper
+interface MoodLogFormProps {
+  moodScore: number | null;
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
-export function MoodLogForm() {
+// 2. ADDED: Accept the prop here
+export function MoodLogForm({ moodScore }: MoodLogFormProps) {
   const [state, formAction, isPending] = useActionState(
     saveMoodLog,
     initialState
   );
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [moodScore, setMoodScore] = useState<number | null>(null);
+  // 3. REMOVED: local moodScore state (since it's now managed by the parent widget)
   const [sleepQuality, setSleepQuality] = useState<number | null>(null);
   const [academicImpact, setAcademicImpact] = useState("None");
   const [selectedStressors, setSelectedStressors] = useState<Set<string>>(new Set());
   const [selectedCoping, setSelectedCoping] = useState<Set<string>>(new Set());
 
-  // Add this new state to track the previous action state
   const [prevState, setPrevState] = useState(state);
 
-  // React official pattern: Reset local state during render when external state changes
   if (state !== prevState) {
     setPrevState(state);
     if (state.success) {
-      setMoodScore(null);
       setSleepQuality(null);
       setAcademicImpact("None");
       setSelectedStressors(new Set());
@@ -97,7 +102,6 @@ export function MoodLogForm() {
     }
   }
 
-  // Only manipulate the DOM (uncontrolled elements) inside the effect
   useEffect(() => {
     if (state.success) {
       formRef.current?.reset();
@@ -107,7 +111,6 @@ export function MoodLogForm() {
   function toggleStressor(tag: string) {
     setSelectedStressors((prev) => {
       const next = new Set(prev);
-      // Replaced the ternary operator with a standard if/else statement
       if (next.has(tag)) {
         next.delete(tag);
       } else {
@@ -120,7 +123,6 @@ export function MoodLogForm() {
   function toggleCoping(tag: string) {
     setSelectedCoping((prev) => {
       const next = new Set(prev);
-      // Replaced the ternary operator with a standard if/else statement
       if (next.has(tag)) {
         next.delete(tag);
       } else {
@@ -132,37 +134,11 @@ export function MoodLogForm() {
 
   return (
     <form ref={formRef} action={formAction} className="space-y-6">
-      {/* ── Mood Score ── */}
-      <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
-          How are you feeling? (1–10)
-        </label>
-        <div className="flex gap-2 flex-wrap">
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setMoodScore(n)}
-              aria-pressed={moodScore === n}
-              className={`
-                w-9 h-9 rounded-lg text-sm font-semibold transition-all duration-150
-                ${
-                  moodScore === n
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
-                    : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
-                }
-              `}
-            >
-              {n}
-            </button>
-          ))}
-        </div>
-        <div className="flex justify-between text-xs text-neutral-500 mt-1 px-0.5">
-          <span>Very low</span>
-          <span>Very high</span>
-        </div>
-        <input type="hidden" name="mood_score" value={moodScore ?? ""} readOnly />
-      </section>
+      
+      {/* 4. ADDED: Hidden input to pass the prop value into the Server Action */}
+      <input type="hidden" name="mood_score" value={moodScore ?? ""} readOnly />
+      
+      {/* 5. REMOVED: The old "How are you feeling?" buttons section */}
 
       {/* ── Optional Note ── */}
       <section>
@@ -304,7 +280,8 @@ export function MoodLogForm() {
       {/* ── Submit ── */}
       <button
         type="submit"
-        disabled={isPending || !moodScore || !sleepQuality}
+        // 6. UPDATED: Ensure we check that moodScore prop is not null
+        disabled={isPending || moodScore === null || !sleepQuality}
         className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {isPending ? "Saving..." : "Save mood log"}
