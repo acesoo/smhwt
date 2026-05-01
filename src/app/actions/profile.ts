@@ -49,6 +49,62 @@ export async function updateUsername(
   return { success: true, message: "Username updated successfully." };
 }
 
+export async function changePassword(
+  _prev: ProfileFormState,
+  formData: FormData
+): Promise<ProfileFormState> {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Not authenticated." };
+
+  const newPassword     = (formData.get("new_password")     as string | null) ?? "";
+  const confirmPassword = (formData.get("confirm_password") as string | null) ?? "";
+
+  if (!newPassword)
+    return { success: false, error: "Password cannot be empty." };
+  if (newPassword.length < 8)
+    return { success: false, error: "Password must be at least 8 characters." };
+  if (newPassword !== confirmPassword)
+    return { success: false, error: "Passwords do not match." };
+
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+  if (error) return { success: false, error: error.message };
+
+  return { success: true, message: "Password updated successfully." };
+}
+
+/**
+ * Marks the account for deletion by updating user_metadata.
+ * Hard deletion requires the service role key and is intentionally
+ * left for a manual admin action — this creates a clear audit trail.
+ */
+export async function requestAccountDeletion(
+  _prev: ProfileFormState,
+  formData: FormData
+): Promise<ProfileFormState> {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Not authenticated." };
+
+  const confirmation = (formData.get("confirmation") as string | null)?.trim();
+  if (confirmation !== "DELETE")
+    return { success: false, error: 'Type DELETE (all caps) to confirm.' };
+
+  const { error } = await supabase.auth.updateUser({
+    data: { deletion_requested: true, deletion_requested_at: new Date().toISOString() },
+  });
+
+  if (error) return { success: false, error: error.message };
+
+  return {
+    success: true,
+    message: "Deletion request recorded. An admin will process this.",
+  };
+}
+
 /**
  * Sign out the current user and redirect to login.
  * Called from both the profile page and the header avatar dropdown.
