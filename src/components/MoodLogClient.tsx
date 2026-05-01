@@ -13,7 +13,8 @@ export default function MoodLogClient() {
         selectedScore={moodScore}
         onMoodSelect={(score) => setMoodScore(score)}
       />
-      <MoodLogForm />
+      
+      <MoodLogForm moodScore={moodScore} />
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import MoodLogClient from "@/components/MoodLogClient";
 import BottomNav from "@/components/BottomNav";
+// Import our tab switcher instead of MoodLogClient directly
+import { LogClient } from "@/components/log-client"; 
 
-export const metadata = { title: "Mood Log — SMHWT" };
+export const metadata = { title: "Daily Log — SMHWT" };
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {
@@ -14,8 +15,8 @@ function formatDate(date: Date): string {
 }
 
 /**
- * /log — Mood Log entry page.
- * Journal entries have their own page at /journal (S3-DEV-03).
+ * /log — Combined Mood Log and Journal entry page.
+ * Uses <LogClient> for instant, client-side tab switching.
  */
 export default function LogPage() {
   const today = formatDate(new Date());
@@ -30,13 +31,14 @@ export default function LogPage() {
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-base font-semibold text-neutral-100">Mood log</h1>
+        <h1 className="text-base font-semibold text-neutral-100">Daily Log</h1>
         <span className="text-xs text-neutral-500">{today}</span>
       </header>
 
-      <main className="px-4 pt-5 pb-32">
-  <MoodLogClient />
-</main>
+      {/* Render the tab switcher here! */}
+      <main>
+        <LogClient />
+      </main>
 
       <BottomNav />
     </div>
