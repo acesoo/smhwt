@@ -13,8 +13,8 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     href: "/dashboard",
-    label: "Home",
-    ariaLabel: "Go to dashboard home",
+    label: "Dashboard",
+    ariaLabel: "Go to dashboard",
     icon: (active) => (
       <svg
         width="22"
