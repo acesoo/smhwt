@@ -13,7 +13,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     href: "/dashboard",
-    label: "Home",
+    label: "Dashboard",
     ariaLabel: "Go to dashboard home",
     icon: (active) => (
       <svg
@@ -57,7 +57,7 @@ const navItems: NavItem[] = [
   },
   {
     href: "/log",
-    label: "Mood Log",
+    label: "Entries",
     ariaLabel: "Go to mood log entry",
     icon: (active) => (
       <svg
@@ -86,25 +86,38 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    href: "/journal",
-    label: "Journal",
-    ariaLabel: "Go to journal entries",
-    icon: (active) => (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 22 22"
-        fill="none"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M4 5.5h14M4 11h9M4 16.5h11"
-          stroke="currentColor"
-          strokeWidth={active ? "1.8" : "1.4"}
-          strokeLinecap="round"
-        />
-      </svg>
+  href: "/stories",
+  label: "Stories",
+  ariaLabel: "Browse peer stories",
+  icon: (active) => (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="4" y="3" width="9" height="12" rx="2"
+        stroke="currentColor"
+        strokeWidth={active ? "1.8" : "1.4"}
+        fill={active ? "currentColor" : "none"}
+        fillOpacity={active ? "0.12" : "0"}
+      />
+      <path
+        d="M7 7h3M7 10h3"
+        stroke="currentColor"
+        strokeWidth={active ? "1.8" : "1.4"}
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 7h2a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-1"
+        stroke="currentColor"
+        strokeWidth={active ? "1.8" : "1.4"}
+        strokeLinecap="round"
+      />
+    </svg>
     ),
   },
   {

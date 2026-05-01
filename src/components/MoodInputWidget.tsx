@@ -22,7 +22,10 @@ type MoodInputWidgetProps = {
 
 /** Returns a "YYYY-MM-DD" string for any Date */
 function toDateKey(date: Date): string {
-  return date.toISOString().split("T")[0];
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 /** Returns the emoji + label for a given mood score (1–10) */
@@ -125,7 +128,8 @@ export function MoodInputWidget({
   const currentMood = selectedScore ? getMoodEmoji(selectedScore) : null;
 
   return (
-    <div className="space-y-5">
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-sm space-y-5">
 
       {/* ── Calendar ── */}
       <section>
@@ -290,6 +294,7 @@ export function MoodInputWidget({
         </div>
       </section>
 
+    </div>
     </div>
   );
 }

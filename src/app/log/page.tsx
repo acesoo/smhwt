@@ -1,6 +1,6 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { MoodLogForm } from "@/components/mood-log-form";
+import MoodLogClient from "@/components/MoodLogClient";
 import BottomNav from "@/components/BottomNav";
 
 export const metadata = { title: "Mood Log — SMHWT" };
@@ -35,8 +35,8 @@ export default function LogPage() {
       </header>
 
       <main className="px-4 pt-5 pb-32">
-        <MoodLogForm />
-      </main>
+  <MoodLogClient />
+</main>
 
       <BottomNav />
     </div>
