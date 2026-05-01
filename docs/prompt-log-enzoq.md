@@ -432,20 +432,25 @@
 
 ## Entry 19
 
-**Date:** May 1, 2026
+**Date:** May 2, 2026
 **Task:** S4-DEV-05 — Build Dashboard and Profile
 
 ### Prompt Given
-> 
+> "Asked to implement the central `/dashboard` page hosting the `DashboardSummaryCard` for aggregated insights, and a dedicated `/profile` settings page for updating the user's display name. Also requested to redirect the root app page to `/dashboard`, extract a reusable sign-out component, remove the standalone Journal page, and update the prompt log with previous entries."
 
 ### What the AI Produced
-
+- Generated the `/dashboard` page logic, including the streak calculation function and recent entries fetch.
+- Created the `/profile` page and `profile-form.tsx` with a Server Action (`profile.ts`) to securely validate and update the user's display name in Supabase Auth.
+- Extracted a reusable `SignOutButton` component.
+- Updated the main root `page.tsx` to automatically redirect users to `/dashboard`.
 
 ### What I Changed, Rejected, or Improved
-
+- Intentionally deferred the "globally accessible avatar dropdown" as it is a UX/UI Designer deliverable (`S4-UX-06`). Instead, I focused on building the robust `/profile` settings layer beneath it and extracted the `SignOutButton` so the designer can seamlessly reuse my logic without duplicating code.
+- Manually consolidated the routing by deleting the standalone Journal page to ensure users rely on the central dashboard for navigation.
 
 ### What I Learned or Decided
-
+- Supabase Auth's `user_metadata` is the ideal single source of truth for display names, preventing the need for a complex custom profiles table just for basic user info.
+- Extracting functional, logic-heavy components (like authentication buttons) early creates a much cleaner handoff for UI designers working on global layout components.
 
 ---
 
@@ -470,8 +475,8 @@
 
 ## Entry 21
 
-**Date:** May 1, 2026
-**Task:** S4-DEV-08 — Build Resource Library
+**Date:** May 2, 2026
+**Task:** S4-DEV-07 — Add CHANGELOG.md v0.2.0 entry listing Build Sprint 2 features
 
 ### Prompt Given
 > 
@@ -483,5 +488,8 @@
 
 
 ### What I Learned or Decided
+
+
+---
 
 *This log is maintained on the `feature/dev-scaffold` branch and submitted as part of the Developer's individual deliverable.*
