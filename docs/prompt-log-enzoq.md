@@ -432,25 +432,26 @@
 
 ## Entry 19
 
-**Date:** May 2, 2026
+**Date:** May 1, 2026
 **Task:** S4-DEV-05 — Build Dashboard and Profile
 
 ### Prompt Given
-> "Asked to implement the central `/dashboard` page hosting the `DashboardSummaryCard` for aggregated insights, and a dedicated `/profile` settings page for updating the user's display name. Also requested to redirect the root app page to `/dashboard`, extract a reusable sign-out component, remove the standalone Journal page, and update the prompt log with previous entries."
+> "Asked to implement the central `/dashboard` page for aggregated insights, and a `/profile` settings page for updating the user's display name. Later expanded the profile page to include secure password changes (`changePassword`) and safe account deletions (`requestAccountDeletion`) using `shadcn/ui` buttons. Also requested root redirects, extraction of a reusable sign-out component, and the removal of the standalone Journal page."
 
 ### What the AI Produced
-- Generated the `/dashboard` page logic, including the streak calculation function and recent entries fetch.
-- Created the `/profile` page and `profile-form.tsx` with a Server Action (`profile.ts`) to securely validate and update the user's display name in Supabase Auth.
-- Extracted a reusable `SignOutButton` component.
-- Updated the main root `page.tsx` to automatically redirect users to `/dashboard`.
+- Generated the `/dashboard` page logic, including streak calculations and recent entry fetches.
+- Created the `/profile` page with comprehensive Server Actions to safely update display names, change passwords via Supabase Auth, and flag accounts for deletion via user metadata.
+- Built the `ChangePasswordForm` and `DeleteAccountForm` client components styled with `shadcn/ui` Buttons.
+- Extracted a reusable `SignOutButton` component and updated the main root `page.tsx` to redirect to `/dashboard`.
 
 ### What I Changed, Rejected, or Improved
-- Intentionally deferred the "globally accessible avatar dropdown" as it is a UX/UI Designer deliverable (`S4-UX-06`). Instead, I focused on building the robust `/profile` settings layer beneath it and extracted the `SignOutButton` so the designer can seamlessly reuse my logic without duplicating code.
-- Manually consolidated the routing by deleting the standalone Journal page to ensure users rely on the central dashboard for navigation.
+- Intentionally deferred the "globally accessible avatar dropdown" as it is a UX/UI Designer deliverable (`S4-UX-06`), focusing instead on building the robust `/profile` settings layer beneath it.
+- Rejected and completely removed a suggested Theme Toggle feature, keeping the scope strictly focused on core account management.
+- Opted for a "soft delete" approach for `requestAccountDeletion` (using a metadata flag) rather than hard-deleting the user immediately. This safely preserves database relational integrity for their previous journal entries and peer stories.
 
 ### What I Learned or Decided
-- Supabase Auth's `user_metadata` is the ideal single source of truth for display names, preventing the need for a complex custom profiles table just for basic user info.
-- Extracting functional, logic-heavy components (like authentication buttons) early creates a much cleaner handoff for UI designers working on global layout components.
+- Supabase Auth's `user_metadata` is highly versatile—serving not just as a single source of truth for display names, but also as a secure place to store system-level account lifecycle flags (like deletion requests).
+- Consolidating account management (display name, password, deletion) into a single secure route with dedicated Server Actions keeps the application logic clean and much easier to secure.
 
 ---
 
