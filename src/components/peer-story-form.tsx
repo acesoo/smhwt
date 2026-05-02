@@ -4,26 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { submitPeerStory, type StoryFormState } from "@/app/actions/peer-stories";
 import { ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-// KM Report Section 9.2 — Layer 3 Forum Tags
-const FORUM_TAG_GROUPS = [
-  {
-    category: "Shared Experience",
-    tags: ["#MyStory", "#WhatHelpedMe", "#StillStruggling", "#GettingBetter"],
-  },
-  {
-    category: "Peer Advice",
-    tags: ["#TryThis", "#WhatWorkedForMe", "#ResourceTip", "#AskingForAdvice"],
-  },
-  {
-    category: "Resource Sharing",
-    tags: ["#ArticleShare", "#ToolRecommendation"],
-  },
-  {
-    category: "Community Support",
-    tags: ["#YouAreNotAlone", "#CheckingIn"],
-  },
-] as const;
+import { FORUM_TAG_GROUPS } from "@/lib/constants/tags";
 
 const initialState: StoryFormState = { success: false };
 
