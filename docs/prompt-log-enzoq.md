@@ -436,22 +436,23 @@
 **Task:** S4-DEV-05 — Build Dashboard and Profile
 
 ### Prompt Given
-> "Asked to implement the central `/dashboard` page for aggregated insights, and a `/profile` settings page for updating the user's display name. Later expanded the profile page to include secure password changes (`changePassword`) and immediate account deletion using a Supabase RPC. Requested `shadcn/ui` buttons, a 'DELETE' confirmation guard, root redirects, extraction of a reusable sign-out component, and the removal of the standalone Journal page."
+> "Asked to implement the central `/dashboard` page and a `/profile` settings page. Later expanded the profile page to include password changes, a 'Danger Zone' for immediate account deletion via Supabase RPC, and a conditionally rendered link to the Admin Panel for moderators. Requested refactoring `ProfileForm` and `SignOutButton` to use `shadcn/ui` Buttons, root redirects, and the removal of the standalone Journal page."
 
 ### What the AI Produced
 - Generated the `/dashboard` page logic, including streak calculations and recent entry fetches.
-- Created the `/profile` page with comprehensive Server Actions to safely update display names, change passwords via Supabase Auth, and instantly delete the account via a Supabase RPC.
-- Built the `ChangePasswordForm` and `DeleteAccountForm` client components styled with `shadcn/ui` Buttons, including the strict "DELETE" input confirmation.
-- Extracted a reusable `SignOutButton` component and updated the main root `page.tsx` to redirect to `/dashboard`.
+- Created the `/profile` page with comprehensive Server Actions to safely update display names, change passwords, and instantly delete the account via a Supabase RPC.
+- Refactored UI components (`ProfileForm`, `SignOutButton`, `ChangePasswordForm`, `DeleteAccountForm`) to utilize consistent `shadcn/ui` Button styling.
+- Added server-side logic to fetch the user's `is_admin` status and conditionally render an Admin Panel navigation link.
 
 ### What I Changed, Rejected, or Improved
 - Intentionally deferred the "globally accessible avatar dropdown" as it is a UX/UI Designer deliverable (`S4-UX-06`), focusing instead on building the robust `/profile` settings layer beneath it.
-- Rejected and completely removed a suggested Theme Toggle feature, keeping the scope strictly focused on core account management.
-- Pivoted from my original "soft delete" metadata idea to a complete, immediate **hard deletion** using a Supabase RPC. Added the "DELETE" confirmation requirement to prevent accidental self-destruction.
+- Rejected a suggested Theme Toggle feature, keeping the scope strictly focused on core account management.
+- Pivoted from my original "soft delete" metadata idea to a complete, immediate **hard deletion** using a Supabase RPC, requiring a strict "DELETE" text confirmation to prevent accidental self-destruction.
+- Grouped the destructive account actions into a standard "Danger Zone" UI pattern to improve UX and visual hierarchy.
 
 ### What I Learned or Decided
-- Supabase prevents users from directly deleting their own `auth.users` record for security reasons. Using an RPC (Remote Procedure Call) defined in the database allows a user to securely trigger their own deletion without needing a service role key on the client or server.
-- Cascading deletes at the database level (on profiles, journal entries, and stories) ensures strict privacy compliance when a user decides to leave the platform, leaving no orphaned data behind.
+- Supabase prevents users from directly deleting their own `auth.users` record for security reasons. Using an RPC allows a user to securely trigger their own deletion without needing a service role key on the client.
+- Fetching user roles (like `is_admin`) directly in Next.js Server Components allows for secure, seamless conditional UI rendering (like the Admin link) without any client-side layout shift or exposed state.
 
 ---
 
