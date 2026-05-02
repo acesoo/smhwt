@@ -1,23 +1,15 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 import { ProfileForm } from "@/components/profile-form";
+import { ChangePasswordForm } from "@/components/change-password-form";
 import { SignOutButton } from "@/components/sign-out-button";
+import { DeleteAccountForm } from "@/components/delete-account-form";
 
 export const metadata = { title: "Profile — SMHWT" };
 
-/**
- * /profile — Account settings page.
- * Handles username updates via ProfileForm (server action).
- * SignOutButton is extracted as a shared component so the designer's
- * header avatar dropdown can reuse it without duplicating logic.
- *
- * NOTE: The avatar/ProfileCard component in the header is a UX/UI
- * Designer deliverable (S4-UX-06). This page provides the settings
- * layer that sits beneath it.
- */
 export default async function ProfilePage() {
   const supabase = await createClient();
   const {
@@ -25,6 +17,15 @@ export default async function ProfilePage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  // Check admin status server-side — never passed to client
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("is_admin")
+    .eq("id", user.id)
+    .single();
+
+  const isAdmin = profile?.is_admin ?? false;
 
   const displayName =
     user.user_metadata?.full_name?.split(" ")[0] ??
@@ -66,10 +67,47 @@ export default async function ProfilePage() {
                 {user.id}
               </span>
             </div>
+            {isAdmin && (
+              <>
+                <div className="border-t border-neutral-800" />
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-neutral-500">Role</span>
+                  <div className="flex items-center gap-1.5">
+                    <ShieldAlert className="w-3 h-3 text-amber-500" />
+                    <span className="text-xs text-amber-400 font-semibold">
+                      Admin
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </section>
 
-        {/* ── Username update ── */}
+        {/* ── Admin Panel link (admin only) ── */}
+        {isAdmin && (
+          <section className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              Administration
+            </p>
+            <Link
+              href="/admin"
+              className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-amber-950/20 border border-amber-900 hover:bg-amber-950/40 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <ShieldAlert className="w-4 h-4 text-amber-500" />
+                <span className="text-sm font-medium text-amber-300">
+                  Open Admin Panel
+                </span>
+              </div>
+              <span className="text-xs text-amber-700 group-hover:text-amber-500 transition-colors">
+                Moderate peer stories →
+              </span>
+            </Link>
+          </section>
+        )}
+
+        {/* ── Display name ── */}
         <section className="space-y-3">
           <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Display name
@@ -79,12 +117,30 @@ export default async function ProfilePage() {
           </div>
         </section>
 
-        {/* ── Sign out ── */}
+        {/* ── Change password ── */}
+        <section className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+            Password
+          </p>
+          <div className="bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-4">
+            <ChangePasswordForm />
+          </div>
+        </section>
+
+        {/* ── Session ── */}
         <section className="space-y-3">
           <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Session
           </p>
           <SignOutButton />
+        </section>
+
+        {/* ── Danger zone ── */}
+        <section className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-red-900">
+            Danger zone
+          </p>
+          <DeleteAccountForm />
         </section>
 
       </main>
