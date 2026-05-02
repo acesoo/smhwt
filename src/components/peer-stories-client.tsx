@@ -50,7 +50,6 @@ interface Props {
   fetchError: string | null;
 }
 
-// ── Skeleton Card ─────────────────────────────────────────────────────────────
 export function StoryFeedSkeleton() {
   return (
     <div className="space-y-3">
@@ -74,7 +73,6 @@ export function StoryFeedSkeleton() {
   );
 }
 
-// ── Story Card ────────────────────────────────────────────────────────────────
 function StoryCard({ story }: { story: PeerStory }) {
   const [expanded, setExpanded] = useState(false);
   const [reactions, setReactions] = useState<Record<string, number>>({
@@ -155,7 +153,6 @@ function StoryCard({ story }: { story: PeerStory }) {
   );
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
 export function PeerStoriesClient({ initialStories, fetchError }: Props) {
   const [activeTab, setActiveTab] = useState<"feed" | "share">("feed");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -176,6 +173,8 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
 
   return (
     <main className="w-full max-w-2xl mx-auto px-4 pt-5 pb-32 space-y-5">
+
+      {/* ── Tab Switcher ── */}
       <div className="flex bg-neutral-900/50 p-1 rounded-lg border border-neutral-800">
         <button
           onClick={() => setActiveTab("feed")}
@@ -199,15 +198,19 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
         </button>
       </div>
 
-      <div className="flex items-center gap-2 bg-violet-950/40 border border-violet-800/50 rounded-lg px-4 py-3">
-        <ShieldCheck className="w-4 h-4 text-violet-400 shrink-0" />
-        <p className="text-xs text-violet-300">
-          All stories are shared anonymously. No personal information is ever shown.
-        </p>
-      </div>
-
+      {/* ── Feed Tab ── */}
       {activeTab === "feed" && (
         <div className="space-y-5">
+
+          {/* Anonymity Notice — feed only */}
+          <div className="flex items-center gap-2 bg-violet-950/40 border border-violet-800/50 rounded-lg px-4 py-3">
+            <ShieldCheck className="w-4 h-4 text-violet-400 shrink-0" />
+            <p className="text-xs text-violet-300">
+              All stories are shared anonymously. No personal information is ever shown.
+            </p>
+          </div>
+
+          {/* Tag filters */}
           <section aria-label="Filter stories by tag">
             <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">
               Filter by tag
@@ -244,6 +247,7 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
             </div>
           </section>
 
+          {/* Results count + Sort */}
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
               {filtered.length} {filtered.length === 1 ? "story" : "stories"}
@@ -259,6 +263,7 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
             </select>
           </div>
 
+          {/* Stories */}
           {fetchError ? (
             <p className="text-red-400 text-sm bg-red-950/40 border border-red-800 rounded-lg px-4 py-3">
               Could not load stories: {fetchError}
@@ -281,7 +286,9 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
         </div>
       )}
 
+      {/* ── Share Tab ── */}
       {activeTab === "share" && <PeerStoryForm />}
+
     </main>
   );
 }
