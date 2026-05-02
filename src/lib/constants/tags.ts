@@ -61,7 +61,33 @@ export const COPING_TAGS = [
 
 export type CopingTag = (typeof COPING_TAGS)[number];
 
-// --- Combined export for journal_entries.tags ------------------
+// --- 2.3 Forum Tags (Socialization Phase) — KM Report Section 9.2 Layer 3 --
+
+export const FORUM_TAGS = [
+  // Shared Experience
+  "#MyStory",
+  "#WhatHelpedMe",
+  "#StillStruggling",
+  "#GettingBetter",
+
+  // Peer Advice
+  "#TryThis",
+  "#WhatWorkedForMe",
+  "#ResourceTip",
+  "#AskingForAdvice",
+
+  // Resource Sharing
+  "#ArticleShare",
+  "#ToolRecommendation",
+
+  // Community Support
+  "#YouAreNotAlone",
+  "#CheckingIn",
+] as const;
+
+export type ForumTag = (typeof FORUM_TAGS)[number];
+
+// --- Combined exports -----------------------------------------
 
 export const ALL_TAGS = [...STRESSOR_TAGS, ...COPING_TAGS] as const;
 export type WellnessTag = StressorTag | CopingTag;
@@ -107,5 +133,25 @@ export const COPING_TAG_GROUPS = [
   {
     category: "Support Seeking",
     tags: ["#InstrumentalSupport", "#EmotionalSupport"] as CopingTag[],
+  },
+];
+
+// KM Report Section 9.2 — Layer 3 Forum Tags (Socialization layer)
+export const FORUM_TAG_GROUPS = [
+  {
+    category: "Shared Experience",
+    tags: ["#MyStory", "#WhatHelpedMe", "#StillStruggling", "#GettingBetter"] as ForumTag[],
+  },
+  {
+    category: "Peer Advice",
+    tags: ["#TryThis", "#WhatWorkedForMe", "#ResourceTip", "#AskingForAdvice"] as ForumTag[],
+  },
+  {
+    category: "Resource Sharing",
+    tags: ["#ArticleShare", "#ToolRecommendation"] as ForumTag[],
+  },
+  {
+    category: "Community Support",
+    tags: ["#YouAreNotAlone", "#CheckingIn"] as ForumTag[],
   },
 ];
