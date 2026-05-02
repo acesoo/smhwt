@@ -456,20 +456,26 @@
 
 ## Entry 20
 
-**Date:** May 1, 2026
+**Date:** May 2, 2026
 **Task:** S4-DEV-06 — Build Admin Panel for Peer Story Moderation
 
 ### Prompt Given
-> 
+> "Asked to build a highly protected `/admin` route for moderating peer support stories. Requested a database migration to establish an `is_admin` role, secure Server Actions to toggle story approval, and a client UI panel. Emphasized that regular users must be strictly redirected to `/dashboard` and that admin actions must be completely locked down."
 
 ### What the AI Produced
-
+- Generated the `profiles` table migration including an `is_admin` boolean flag and a Postgres trigger to auto-create profiles for new `auth.users`.
+- Created robust RLS policies allowing admins to bypass the `is_approved = true` public feed restriction to view and update pending stories.
+- Provided the `/admin` page routing logic with server-side redirects for non-admins.
+- Built the `AdminStoriesPanel` client component and the `toggleStoryApproval` Server Action.
 
 ### What I Changed, Rejected, or Improved
-
+- Rather than storing the admin flag directly in Supabase's `user_metadata` (which could potentially be spoofed depending on JWT configurations), I chose to implement a dedicated `profiles` table. This allows the `is_admin` status to be strictly enforced at the database level via secure RLS policies.
+- Implemented a "defense-in-depth" security model. I ensured the authorization check happens in three distinct places: at the page routing level (`page.tsx` redirect), inside the Server Action (`requireAdmin` guard), and at the database level (RLS). 
+- Designed a clean, Tailwind-based moderation UI with clear visual distinction (amber warning banners) to differentiate the Admin Panel from the standard user dashboard.
 
 ### What I Learned or Decided
-
+- Utilizing Postgres triggers (`handle_new_user`) is a powerful way to automatically synchronize custom `profiles` tables with the default Supabase `auth.users` system.
+- Secure moderation tools require defense-in-depth. Relying solely on hiding the UI is insufficient; the server actions and database rows must also be explicitly locked down to prevent API abuse.
 
 ---
 
