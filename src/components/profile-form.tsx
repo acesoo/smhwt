@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { updateUsername, type ProfileFormState } from "@/app/actions/profile";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const initialState: ProfileFormState = { success: false };
 
@@ -17,7 +18,6 @@ export function ProfileForm({ currentUsername }: Props) {
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Keep input in sync if server round-trip updates the value
   useEffect(() => {
     if (state.success && inputRef.current) {
       inputRef.current.blur();
@@ -44,7 +44,7 @@ export function ProfileForm({ currentUsername }: Props) {
           className="bg-neutral-800 border-neutral-700 text-neutral-200 placeholder:text-neutral-500 focus-visible:ring-blue-600"
         />
         <p className="text-xs text-neutral-600">
-          This is the name shown on your dashboard greeting. Max 32 characters.
+          Shown on your dashboard greeting. Max 32 characters.
         </p>
       </div>
 
@@ -59,13 +59,13 @@ export function ProfileForm({ currentUsername }: Props) {
         </p>
       )}
 
-      <button
+      <Button
         type="submit"
         disabled={isPending}
-        className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full bg-blue-600 hover:bg-blue-500 text-white"
       >
         {isPending ? "Saving..." : "Save changes"}
-      </button>
+      </Button>
     </form>
   );
 }
