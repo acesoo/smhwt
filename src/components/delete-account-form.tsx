@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useRouter } from "next/navigation";
 import { requestAccountDeletion, type ProfileFormState } from "@/app/actions/profile";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,16 @@ export function DeleteAccountForm() {
     initialState
   );
   const [expanded, setExpanded] = useState(false);
+  const [prevState, setPrevState] = useState(initialState);
+  const router = useRouter();
+
+  // Redirect to login immediately after successful deletion
+  if (state !== prevState) {
+    setPrevState(state);
+    if (state.success) {
+      router.push("/login");
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -56,11 +67,6 @@ export function DeleteAccountForm() {
               {state.error}
             </p>
           )}
-          {state.success && (
-            <p className="text-green-400 text-sm bg-green-950/40 border border-green-800 rounded-lg px-4 py-2">
-              {state.message}
-            </p>
-          )}
 
           <div className="flex gap-3">
             <Button
@@ -73,10 +79,10 @@ export function DeleteAccountForm() {
             </Button>
             <Button
               type="submit"
-              disabled={isPending || state.success}
+              disabled={isPending}
               className="flex-1 bg-red-700 hover:bg-red-600 text-white"
             >
-              {isPending ? "Submitting..." : "Confirm deletion"}
+              {isPending ? "Deleting..." : "Confirm deletion"}
             </Button>
           </div>
         </form>

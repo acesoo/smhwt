@@ -75,11 +75,6 @@ export async function changePassword(
   return { success: true, message: "Password updated successfully." };
 }
 
-/**
- * Marks the account for deletion by updating user_metadata.
- * Hard deletion requires the service role key and is intentionally
- * left for a manual admin action — this creates a clear audit trail.
- */
 export async function requestAccountDeletion(
   _prev: ProfileFormState,
   formData: FormData
@@ -91,18 +86,14 @@ export async function requestAccountDeletion(
 
   const confirmation = (formData.get("confirmation") as string | null)?.trim();
   if (confirmation !== "DELETE")
-    return { success: false, error: 'Type DELETE (all caps) to confirm.' };
+    return { success: false, error: "Type DELETE (all caps) to confirm." };
 
-  const { error } = await supabase.auth.updateUser({
-    data: { deletion_requested: true, deletion_requested_at: new Date().toISOString() },
-  });
-
+  const { error } = await supabase.rpc("delete_own_account");
   if (error) return { success: false, error: error.message };
 
-  return {
-    success: true,
-    message: "Deletion request recorded. An admin will process this.",
-  };
+  await supabase.auth.signOut();
+
+  return { success: true, message: "Your account has been permanently deleted." };
 }
 
 /**
