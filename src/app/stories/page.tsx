@@ -1,7 +1,8 @@
+import { Suspense } from "react";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { getApprovedStories } from "@/app/actions/peer-stories";
-import { PeerStoriesClient } from "@/components/peer-stories-client";
+import { PeerStoriesClient, StoryFeedSkeleton } from "@/components/peer-stories-client";
 import BottomNav from "@/components/BottomNav";
 
 export const metadata = { title: "Peer Stories — SMHWT" };
@@ -14,9 +15,12 @@ function formatDate(date: Date): string {
   });
 }
 
-export default async function StoriesPage() {
+async function StoriesFeed() {
   const { data, error } = await getApprovedStories();
+  return <PeerStoriesClient initialStories={data ?? []} fetchError={error} />;
+}
 
+export default function StoriesPage() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
       <header className="flex items-center justify-between px-4 py-4 border-b border-neutral-800">
@@ -31,7 +35,13 @@ export default async function StoriesPage() {
         <span className="text-xs text-neutral-500">{formatDate(new Date())}</span>
       </header>
 
-      <PeerStoriesClient initialStories={data ?? []} fetchError={error} />
+      <Suspense fallback={
+        <div className="w-full max-w-2xl mx-auto px-4 pt-5 pb-32 space-y-3">
+          <StoryFeedSkeleton />
+        </div>
+      }>
+        <StoriesFeed />
+      </Suspense>
 
       <BottomNav />
     </div>
