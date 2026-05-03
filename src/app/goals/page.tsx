@@ -6,6 +6,7 @@ import { getGoals } from "@/app/actions/wellness-goals";
 import GoalCard from "@/components/goal-card";
 import WellnessGoalForm from "@/components/wellness-goal-form";
 import BottomNav from "@/components/BottomNav";
+import { ProfileDropdown } from "@/components/ProfileDropdown";
 
 export const metadata = { title: "Goals — SMHWT" };
 
@@ -25,9 +26,14 @@ export default async function GoalsPage() {
 
   if (!user) redirect("/login");
 
+  const userName =
+    user.user_metadata?.full_name?.split(" ")[0] ??
+    user.email?.split("@")[0] ??
+    "?";
+
   const { data: goals } = await getGoals();
 
-  const activeGoals    = goals?.filter((g) => g.status === "active")    ?? [];
+  const activeGoals = goals?.filter((g) => g.status === "active") ?? [];
   const completedGoals = goals?.filter((g) => g.status === "completed") ?? [];
   const abandonedGoals = goals?.filter((g) => g.status === "abandoned") ?? [];
 
@@ -42,7 +48,7 @@ export default async function GoalsPage() {
           <ChevronLeft className="w-5 h-5" />
         </Link>
         <h1 className="text-base font-semibold text-neutral-100">Goals</h1>
-        <span className="text-xs text-neutral-500">{formatDate(new Date())}</span>
+        <ProfileDropdown username={userName} />
       </header>
 
       <main className="max-w-2xl mx-auto p-4 space-y-8 mt-6 pb-32">
