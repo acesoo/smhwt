@@ -39,8 +39,7 @@ export function ProfileDropdown({ username }: Props) {
           
           {/* User info */}
           <div className="px-4 py-3 border-b border-neutral-800">
-            <p className="text-xs font-semibold text-neutral-200">{username}</p>
-            <p className="text-[10px] text-neutral-500">Student account</p>
+            <p className="text-md font-semibold text-neutral-200">{username}</p>
           </div>
 
           {/* Profile link */}

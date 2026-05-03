@@ -129,7 +129,7 @@ export function MoodInputWidget({
 
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-sm space-y-5">
+      <div className="w-full max-w-md space-y-5">
 
       {/* ── Calendar ── */}
       <section>

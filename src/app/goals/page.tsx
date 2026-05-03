@@ -38,7 +38,7 @@ export default async function GoalsPage() {
           <ProfileDropdown username={userName} />
         </header>
 
-        <main className="flex-1 px-4 pt-5 pb-32 max-w-2xl mx-auto w-full space-y-8">
+        <main className="w-full max-w-4xl mx-auto px-4 pt-5 pb-32 space-y-5">
           <section>
             <WellnessGoalForm />
           </section>

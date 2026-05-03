@@ -52,7 +52,7 @@ function TagGroup({
         {category}
       </p>
       <div className="flex flex-wrap gap-2">
-        {tags.map((tag) => (
+        {[...tags].sort().map((tag) => (
           <TagPill
             key={tag}
             label={tag}
