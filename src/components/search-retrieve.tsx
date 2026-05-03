@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Search, BookOpen, ExternalLink, NotebookPen, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -62,35 +62,81 @@ function PatternCard({ pattern }: { pattern: SearchResults["pattern"] }) {
 
 export function SearchRetrieve() {
   const [keyword, setKeyword] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  // Now explicitly tracks multiple tags as an array
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [results, setResults] = useState<SearchResults>(EMPTY);
   const [hasSearched, setHasSearched] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  function runSearch(kw: string, tag: string | null) {
-    if (!kw.trim() && !tag) {
-      setResults(EMPTY);
-      setHasSearched(false);
-      return;
-    }
-    startTransition(async () => {
-      const data = await searchAll(kw, tag);
-      setResults(data);
-      setHasSearched(true);
-    });
-  }
-
-  function handleKeywordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value;
-    setKeyword(val);
-    runSearch(val, selectedTag);
-  }
+  // Alphabetically sort tags to keep the UI clean
+  const sortedTags = [...ALL_TAGS].sort((a, b) => a.localeCompare(b));
 
   function handleTagClick(tag: string) {
-    const next = selectedTag === tag ? null : tag;
-    setSelectedTag(next);
-    runSearch(keyword, next);
+    // Toggle logic for multi-select
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   }
+
+  useEffect(() => {
+    let isStale = false;
+
+    const delayDebounceFn = setTimeout(() => {
+      if (isStale) return;
+
+      // 1. Checking the correctly named 'tags' array
+      if (!keyword && selectedTags.length === 0) {
+        setResults(EMPTY);
+        setHasSearched(false);
+        return;
+      }
+
+      setHasSearched(true);
+      
+      startTransition(() => {
+        searchAll(keyword, selectedTags.length > 0 ? selectedTags[0] : null)
+          .then((res) => {
+            if (isStale) return;
+
+            // 2. Validate the query response shape before parsing
+            if (res && typeof res === "object" && !res.error) {
+              
+              let filteredJournals = res.journals || [];
+              let filteredResources = res.resources || [];
+
+              // 3. Apply the tag filter logic here using the 'tags' array!
+              if (selectedTags.length > 0) {
+                filteredJournals = filteredJournals.filter((j) =>
+                  selectedTags.every((t) => j.tags?.includes(t))
+                );
+                filteredResources = filteredResources.filter((r) =>
+                  selectedTags.every((t) => r.tags?.includes(t))
+                );
+              }
+
+              // Save the newly filtered arrays to state
+              setResults({
+                ...res,
+                journals: filteredJournals,
+                resources: filteredResources,
+              });
+            } else {
+              setResults({ ...EMPTY, error: res?.error || "Received malformed data." });
+            }
+          })
+          .catch((err) => {
+             if (isStale) return;
+             console.error("Search failed:", err);
+             setResults({ ...EMPTY, error: "An unexpected error occurred." });
+          });
+      });
+    }, 400);
+
+    return () => {
+      isStale = true;
+      clearTimeout(delayDebounceFn);
+    };
+  }, [keyword, selectedTags]); // Dependencies updated to use the correct 'selectedTags' variable
 
   const totalResults = results.journals.length + results.resources.length;
 
@@ -104,12 +150,12 @@ export function SearchRetrieve() {
           type="search"
           placeholder="Search journal entries and resources..."
           value={keyword}
-          onChange={handleKeywordChange}
+          onChange={(e) => setKeyword(e.target.value)}
           className="pl-9 bg-neutral-800 border-neutral-700 text-neutral-200 placeholder:text-neutral-500 focus-visible:ring-blue-600"
         />
       </div>
 
-      {/* ── Tag Filter ── */}
+      {/* ── Tag Filter (Multi-select) ── */}
       <section aria-label="Filter by tag">
         <div className="flex items-center gap-2 mb-3">
           <Tag className="w-3.5 h-3.5 text-neutral-500" />
@@ -118,17 +164,18 @@ export function SearchRetrieve() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {ALL_TAGS.map((tag) => {
-            const active = selectedTag === tag;
+          {sortedTags.map((tag) => {
+            const active = selectedTags.includes(tag);
             return (
               <button
                 key={tag}
                 onClick={() => handleTagClick(tag)}
                 aria-pressed={active}
                 className={`px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150
-                  ${active
-                    ? "bg-blue-600 border-blue-500 text-white"
-                    : "bg-transparent border-neutral-700 text-neutral-400 hover:border-blue-500 hover:text-blue-400"
+                  ${
+                    active
+                      ? "bg-blue-600 border-blue-500 text-white"
+                      : "bg-transparent border-neutral-700 text-neutral-400 hover:border-blue-500 hover:text-blue-400"
                   }`}
               >
                 {tag}
@@ -148,7 +195,7 @@ export function SearchRetrieve() {
             <p className="text-red-400 text-sm bg-red-950/40 border border-red-800 rounded-lg px-4 py-3">
               {results.error}
             </p>
-          ) : totalResults === 0 ? (
+          ) : totalResults === 0 && !isPending ? (
             <div className="flex flex-col items-center gap-3 py-16 text-neutral-600">
               <Search className="w-10 h-10" />
               <p className="text-sm">No results found.</p>
@@ -180,7 +227,7 @@ export function SearchRetrieve() {
                           <span className="text-[10px] text-neutral-600">
                             {formatDate(j.created_at)}
                           </span>
-                          {j.tags.slice(0, 3).map((t) => (
+                          {j.tags.slice(0, 7).map((t) => (
                             <Badge
                               key={t}
                               variant="secondary"
@@ -227,7 +274,7 @@ export function SearchRetrieve() {
                         </div>
                         {r.tags.length > 0 && (
                           <div className="flex flex-wrap gap-1.5">
-                            {r.tags.map((t) => (
+                            {r.tags.slice(0, 7).map((t) => (
                               <Badge
                                 key={t}
                                 variant="secondary"
@@ -252,13 +299,14 @@ export function SearchRetrieve() {
       {!hasSearched && (
         <div className="flex flex-col items-center gap-3 py-20 text-neutral-700">
           <Search className="w-10 h-10" />
-          <p className="text-sm">Enter a keyword or select a tag to search.</p>
+          <p className="text-sm">Enter a keyword or select tags to search.</p>
         </div>
       )}
 
+      {/* ── Loading indicator ── */}
       {isPending && (
         <div className="fixed inset-0 pointer-events-none flex items-end justify-center pb-36">
-          <p className="text-xs text-neutral-500 bg-neutral-900 border border-neutral-800 rounded-full px-4 py-1.5">
+          <p className="text-xs text-neutral-500 bg-neutral-900 border border-neutral-800 rounded-full px-4 py-1.5 shadow-lg">
             Searching…
           </p>
         </div>
