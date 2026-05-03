@@ -95,7 +95,7 @@ export function SearchRetrieve() {
   const totalResults = results.journals.length + results.resources.length;
 
   return (
-    <main className="px-4 pt-5 pb-32 space-y-5">
+    <main className="w-full max-w-2xl mx-auto px-4 pt-5 pb-32 space-y-5">
 
       {/* ── Keyword Search ── */}
       <div className="relative">

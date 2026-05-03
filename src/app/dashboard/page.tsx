@@ -4,6 +4,7 @@ import { Library } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardSummaryCard } from "@/components/DashboardSummaryCard";
 import BottomNav from "@/components/BottomNav";
+import { ProfileDropdown } from "@/components/ProfileDropdown";
 
 export const metadata = { title: "Dashboard — SMHWT" };
 
@@ -106,10 +107,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <header className="sticky top-0 z-10 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800 px-4 py-4">
+      <header className="sticky top-0 z-10 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800 px-4 py-4 flex items-center justify-between">
+        <span className="w-10" />
         <h1 className="text-base font-semibold text-neutral-100 text-center">
           Dashboard
         </h1>
+        <ProfileDropdown username={userName} />
       </header>
 
       <main className="px-4 pt-5 pb-32 max-w-2xl mx-auto space-y-4">

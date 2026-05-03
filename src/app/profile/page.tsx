@@ -7,6 +7,7 @@ import { ProfileForm } from "@/components/profile-form";
 import { ChangePasswordForm } from "@/components/change-password-form";
 import { SignOutButton } from "@/components/sign-out-button";
 import { DeleteAccountForm } from "@/components/delete-account-form";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export const metadata = { title: "Profile — SMHWT" };
 
@@ -49,6 +50,21 @@ export default async function ProfilePage() {
       </header>
 
       <main className="px-4 pt-6 pb-32 max-w-2xl mx-auto space-y-8">
+
+        {/* ── Avatar ── */}
+        <section className="flex flex-col items-center gap-3 pt-2">
+          <Avatar className="w-16 h-16 border border-neutral-700">
+            <AvatarFallback className="bg-neutral-800 text-neutral-200 text-2xl font-semibold">
+              {displayName.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="text-center">
+            <p className="text-base font-semibold text-neutral-100">{displayName}</p>
+            <p className="text-xs text-neutral-500">{email}</p>
+          </div>
+        </section>
+
+        {/* ── Account info (read-only) ── */}
 
         {/* ── Account info (read-only) ── */}
         <section className="space-y-3">
