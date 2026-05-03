@@ -7,25 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PeerStoryForm } from "@/components/peer-story-form";
 import type { PeerStory } from "@/app/actions/peer-stories";
-
-const FORUM_TAG_GROUPS = [
-  {
-    category: "Shared Experience",
-    tags: ["#MyStory", "#WhatHelpedMe", "#StillStruggling", "#GettingBetter"],
-  },
-  {
-    category: "Peer Advice",
-    tags: ["#TryThis", "#WhatWorkedForMe", "#ResourceTip", "#AskingForAdvice"],
-  },
-  {
-    category: "Resource Sharing",
-    tags: ["#ArticleShare", "#ToolRecommendation"],
-  },
-  {
-    category: "Community Support",
-    tags: ["#YouAreNotAlone", "#CheckingIn"],
-  },
-] as const;
+import { FORUM_TAG_GROUPS } from "@/lib/constants/tags";
 
 const BASE_PILL =
   "px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150 cursor-pointer";
