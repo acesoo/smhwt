@@ -201,7 +201,7 @@ export default function BottomNav() {
     <nav
       aria-label="Main navigation"
       role="navigation"
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 bg-neutral-950/90 backdrop-blur-md border-t border-neutral-800 w-full max-w-md md:max-w-7xl"
     >
       <ul
         role="list"
@@ -227,7 +227,7 @@ export default function BottomNav() {
                   focus-visible:ring-blue-500 focus-visible:ring-offset-2
                   ${isActive
                     ? "text-blue-600"
-                    : "text-gray-400 hover:text-gray-600 active:scale-95"
+                    : "text-neutral-500 hover:text-neutral-300 active:scale-95"
                   }
                 `}
               >
@@ -236,7 +236,7 @@ export default function BottomNav() {
                 </span>
                 <span
                   className={`text-[10px] font-medium leading-none tracking-wide transition-colors duration-200 ${
-                    isActive ? "text-blue-600" : "text-gray-400"
+                    isActive ? "text-blue-400" : "text-neutral-500"
                   }`}
                 >
                   {label}

@@ -10,10 +10,7 @@ export const metadata = { title: "Daily Log — SMHWT" };
 
 export default async function LogPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
   const userName =
@@ -23,23 +20,22 @@ export default async function LogPage() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <header className="flex items-center justify-between px-4 py-4 border-b border-neutral-800">
-        <Link
-          href="/dashboard"
-          className="text-neutral-400 hover:text-neutral-200 transition-colors"
-          aria-label="Back to dashboard"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </Link>
-        <h1 className="text-base font-semibold text-neutral-100">Daily Log</h1>
-        <ProfileDropdown username={userName} />
-      </header>
+      <div className="mx-auto w-full max-w-md md:max-w-7xl min-h-screen flex flex-col relative border-x border-neutral-800/60">
 
-      <main>
-        <LogClient />
-      </main>
+        <header className="sticky top-0 z-10 bg-neutral-950/90 backdrop-blur-md flex items-center justify-between px-4 py-4 border-b border-neutral-800">
+          <Link href="/dashboard" className="text-neutral-400 hover:text-neutral-200 transition-colors" aria-label="Back to dashboard">
+            <ChevronLeft className="w-5 h-5" />
+          </Link>
+          <h1 className="text-base font-semibold text-neutral-100">Daily Log</h1>
+          <ProfileDropdown username={userName} />
+        </header>
 
-      <BottomNav />
+        <div className="flex-1">
+          <LogClient />
+        </div>
+
+        <BottomNav />
+      </div>
     </div>
   );
 }

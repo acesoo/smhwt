@@ -182,7 +182,7 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
   }
 
   return (
-    <main className="w-full max-w-2xl mx-auto px-4 pt-5 pb-32 space-y-5">
+    <main className="w-full max-w-4xl mx-auto px-4 pt-5 pb-32 space-y-5">
 
       {/* ── Tab Switcher ── */}
       <div className="flex bg-neutral-900/50 p-1 rounded-lg border border-neutral-800">
