@@ -13,7 +13,9 @@ export default function MoodLogClient() {
         selectedScore={moodScore}
         onMoodSelect={(score) => setMoodScore(score)}
       />
-      
+
+      <div className="border-t border-neutral-800" />
+
       <MoodLogForm moodScore={moodScore} />
     </div>
   );

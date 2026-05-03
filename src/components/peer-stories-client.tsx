@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { BookHeart, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -79,6 +79,14 @@ function StoryCard({ story }: { story: PeerStory }) {
     "🤍": 0, "💪": 0, "🫂": 0,
   });
   const [myReaction, setMyReaction] = useState<string | null>(null);
+  const bodyRef = useRef<HTMLParagraphElement>(null);
+  const [isClamped, setIsClamped] = useState(false);
+
+  useEffect(() => {
+    if (bodyRef.current) {
+      setIsClamped(bodyRef.current.scrollHeight > bodyRef.current.clientHeight);
+    }
+  }, []);
 
   function handleReaction(emoji: string) {
     setReactions((prev) => {
@@ -105,19 +113,21 @@ function StoryCard({ story }: { story: PeerStory }) {
         <p className="text-sm font-semibold text-neutral-100 leading-snug">
           {story.title}
         </p>
-        <p className={`text-xs text-neutral-400 leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>
+        <p ref={bodyRef} className={`text-xs text-neutral-400 leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>
           {story.body}
         </p>
-        <button
-          onClick={() => setExpanded((e) => !e)}
-          className="flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 transition-colors"
-        >
-          {expanded ? (
-            <><ChevronUp className="w-3 h-3" /> Show less</>
-          ) : (
-            <><ChevronDown className="w-3 h-3" /> Read more</>
-          )}
-        </button>
+        {(isClamped || expanded) && (
+          <button
+            onClick={() => setExpanded((e) => !e)}
+            className="flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 transition-colors"
+          >
+            {expanded ? (
+              <><ChevronUp className="w-3 h-3" /> Show less</>
+            ) : (
+              <><ChevronDown className="w-3 h-3" /> Read more</>
+            )}
+          </button>
+        )}
         <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-neutral-800">
           <span className="text-[10px] text-neutral-600">
             {formatDate(story.created_at)}

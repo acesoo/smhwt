@@ -5,7 +5,6 @@ import { submitPeerStory, type StoryFormState } from "@/app/actions/peer-stories
 import { ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-// KM Report Section 9.2 — Layer 3 Forum Tags
 const FORUM_TAG_GROUPS = [
   {
     category: "Shared Experience",
@@ -72,7 +71,7 @@ export function PeerStoryForm() {
   }
 
   return (
-    <form ref={formRef} action={formAction} className="space-y-5">
+    <form ref={formRef} action={formAction} className="space-y-6">
 
       {/* ── Anonymity notice ── */}
       <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-violet-950/30 border border-violet-800">
@@ -85,10 +84,10 @@ export function PeerStoryForm() {
       </div>
 
       {/* ── Title ── */}
-      <section>
+      <section className="space-y-2">
         <label
           htmlFor="story-title"
-          className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2"
+          className="block text-sm font-semibold text-neutral-200"
         >
           Title
         </label>
@@ -102,14 +101,19 @@ export function PeerStoryForm() {
         />
       </section>
 
+      <div className="border-t border-neutral-800" />
+
       {/* ── Body ── */}
-      <section>
+      <section className="space-y-2">
         <label
           htmlFor="story-body"
-          className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2"
+          className="block text-sm font-semibold text-neutral-200"
         >
-          Your story
+          Your Story
         </label>
+        <p className="text-xs text-neutral-500">
+          Share what you went through, what helped, or what you wish others knew.
+        </p>
         <textarea
           id="story-body"
           name="body"
@@ -119,16 +123,20 @@ export function PeerStoryForm() {
         />
       </section>
 
-      {/* ── Forum Tags ── */}
-      <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1">
-          Tags <span className="text-neutral-600 font-normal normal-case">(optional)</span>
-        </label>
-        <p className="text-xs text-neutral-500 mb-4">
-          Help others find your story by tagging what it&apos;s about.
-        </p>
+      <div className="border-t border-neutral-800" />
 
-        <div className="space-y-4">
+      {/* ── Forum Tags ── */}
+      <section className="space-y-3">
+        <div>
+          <label className="block text-sm font-semibold text-neutral-200">
+            Tags <span className="text-neutral-500 font-normal text-xs">(optional)</span>
+          </label>
+          <p className="text-xs text-neutral-500 mt-1">
+            Help others find your story by tagging what it&apos;s about.
+          </p>
+        </div>
+
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-4">
           {FORUM_TAG_GROUPS.map((group) => (
             <div key={group.category} className="space-y-2">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-600">
@@ -152,7 +160,7 @@ export function PeerStoryForm() {
         </div>
 
         {selectedTags.size > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
             {Array.from(selectedTags).map((tag) => (
               <span
                 key={tag}
@@ -208,10 +216,11 @@ export function PeerStoryForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-violet-600 text-white hover:bg-violet-500 active:bg-violet-700 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white disabled:opacity-40 disabled:cursor-not-allowed border border-violet-500"
       >
         {isPending ? "Submitting..." : "Share your story"}
       </button>
+
     </form>
   );
 }

@@ -9,7 +9,7 @@ export function LogClient() {
   const [activeTab, setActiveTab] = useState<"mood" | "journal">("mood");
 
   return (
-    <div className="px-4 pt-5 pb-32">
+    <div className="w-full max-w-2xl mx-auto px-4 pt-5 pb-32">
       {/* ── Tab Switcher ── */}
       <div className="flex bg-neutral-900/50 p-1 rounded-lg mb-8 border border-neutral-800">
         <button
