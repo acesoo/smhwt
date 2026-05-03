@@ -43,7 +43,7 @@ export function ResourceLibrary({ initialResources, fetchError }: Props) {
     filtered.length === 1 ? "1 resource" : `${filtered.length} resources`;
 
   return (
-    <main className="px-4 pt-5 pb-32 space-y-6">
+    <main className="w-full max-w-4xl mx-auto px-4 pt-5 pb-32 space-y-6">
 
       {/* ── Search Input ── */}
       <div className="relative">

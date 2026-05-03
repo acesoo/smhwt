@@ -28,13 +28,13 @@ export function AdminStoriesPanel({ initialStories }: Props) {
   const [feedbackId, setFeedbackId] = useState<string | null>(null);
 
   const filtered = stories.filter((s) => {
-    if (activeFilter === "pending")  return !s.is_approved;
+    if (activeFilter === "pending") return !s.is_approved;
     if (activeFilter === "approved") return s.is_approved;
     return true;
   });
 
-  const pendingCount  = stories.filter((s) => !s.is_approved).length;
-  const approvedCount = stories.filter((s) =>  s.is_approved).length;
+  const pendingCount = stories.filter((s) => !s.is_approved).length;
+  const approvedCount = stories.filter((s) => s.is_approved).length;
 
   function handleToggle(story: AdminStory) {
     startTransition(async () => {
@@ -57,9 +57,9 @@ export function AdminStoriesPanel({ initialStories }: Props) {
       {/* ── Summary stats ── */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Total",    count: stories.length,  filter: "all"      },
-          { label: "Pending",  count: pendingCount,    filter: "pending"  },
-          { label: "Approved", count: approvedCount,   filter: "approved" },
+          { label: "Total", count: stories.length, filter: "all" },
+          { label: "Pending", count: pendingCount, filter: "pending" },
+          { label: "Approved", count: approvedCount, filter: "approved" },
         ].map(({ label, count, filter }) => {
           const active = activeFilter === filter;
           return (
@@ -67,15 +67,15 @@ export function AdminStoriesPanel({ initialStories }: Props) {
               key={filter}
               onClick={() => setActiveFilter(filter as typeof activeFilter)}
               className={`rounded-xl border px-3 py-3 text-left transition-all duration-150
-                ${active
-                  ? "bg-neutral-800 border-neutral-600"
-                  : "bg-neutral-900 border-neutral-800 hover:border-neutral-700"
+  ${active
+                  ? "bg-neutral-800 border-neutral-600 shadow-sm"
+                  : "bg-neutral-900 border-neutral-800 hover:border-neutral-600"
                 }`}
             >
-              <p className="text-lg font-semibold text-neutral-100 leading-none">
+              <p className="text-2xl font-semibold text-neutral-100 leading-none">
                 {count}
               </p>
-              <p className="text-[10px] text-neutral-500 mt-1">{label}</p>
+              <p className="text-xs text-neutral-400 mt-1 font-medium">{label}</p>
             </button>
           );
         })}
