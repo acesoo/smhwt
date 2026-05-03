@@ -7,8 +7,6 @@ import { ACADEMIC_IMPACT_OPTIONS } from "@/lib/taxonomy";
 
 const initialState: MoodLogFormState = { success: false };
 
-// ── Sub-components ────────────────────────────────────────────────────────────
-
 function TagPill({
   label,
   selected,
@@ -67,16 +65,10 @@ function TagGroup({
   );
 }
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-// 1. ADDED: Interface to accept moodScore from the designer's wrapper
 interface MoodLogFormProps {
   moodScore: number | null;
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
-
-// 2. ADDED: Accept the prop here
 export function MoodLogForm({ moodScore }: MoodLogFormProps) {
   const [state, formAction, isPending] = useActionState(
     saveMoodLog,
@@ -84,12 +76,10 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
   );
   const formRef = useRef<HTMLFormElement>(null);
 
-  // 3. REMOVED: local moodScore state (since it's now managed by the parent widget)
   const [sleepQuality, setSleepQuality] = useState<number | null>(null);
   const [academicImpact, setAcademicImpact] = useState("None");
   const [selectedStressors, setSelectedStressors] = useState<Set<string>>(new Set());
   const [selectedCoping, setSelectedCoping] = useState<Set<string>>(new Set());
-
   const [prevState, setPrevState] = useState(state);
 
   if (state !== prevState) {
@@ -111,11 +101,8 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
   function toggleStressor(tag: string) {
     setSelectedStressors((prev) => {
       const next = new Set(prev);
-      if (next.has(tag)) {
-        next.delete(tag);
-      } else {
-        next.add(tag);
-      }
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
       return next;
     });
   }
@@ -123,30 +110,24 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
   function toggleCoping(tag: string) {
     setSelectedCoping((prev) => {
       const next = new Set(prev);
-      if (next.has(tag)) {
-        next.delete(tag);
-      } else {
-        next.add(tag);
-      }
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
       return next;
     });
   }
 
   return (
     <form ref={formRef} action={formAction} className="space-y-6">
-      
-      {/* 4. ADDED: Hidden input to pass the prop value into the Server Action */}
+
       <input type="hidden" name="mood_score" value={moodScore ?? ""} readOnly />
-      
-      {/* 5. REMOVED: The old "How are you feeling?" buttons section */}
 
       {/* ── Optional Note ── */}
-      <section>
+      <section className="space-y-2">
         <label
           htmlFor="mood-note"
-          className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2"
+          className="block text-sm font-semibold text-neutral-200"
         >
-          Add a note (optional)
+          Add a note <span className="text-neutral-500 font-normal text-xs">(optional)</span>
         </label>
         <textarea
           id="mood-note"
@@ -157,10 +138,12 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
         />
       </section>
 
+      <div className="border-t border-neutral-800" />
+
       {/* ── Sleep Quality ── */}
-      <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
-          Sleep quality (1–5)
+      <section className="space-y-3">
+        <label className="block text-sm font-semibold text-neutral-200">
+          Sleep quality <span className="text-neutral-500 font-normal text-xs">(1–5)</span>
         </label>
         <div className="flex gap-2">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -182,16 +165,18 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
             </button>
           ))}
         </div>
-        <div className="flex justify-between text-xs text-neutral-500 mt-1 px-0.5">
+        <div className="flex justify-between text-xs text-neutral-500 px-0.5">
           <span>Very poor</span>
           <span>Excellent</span>
         </div>
         <input type="hidden" name="sleep_quality" value={sleepQuality ?? ""} readOnly />
       </section>
 
+      <div className="border-t border-neutral-800" />
+
       {/* ── Academic Impact ── */}
-      <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
+      <section className="space-y-3">
+        <label className="block text-sm font-semibold text-neutral-200">
           Academic impact
         </label>
         <div className="flex gap-2 flex-wrap">
@@ -217,12 +202,14 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
         <input type="hidden" name="academic_impact" value={academicImpact} readOnly />
       </section>
 
-      {/* ── Stressor Tags — grouped by KM category ── */}
-      <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
+      <div className="border-t border-neutral-800" />
+
+      {/* ── Stressor Tags ── */}
+      <section className="space-y-3">
+        <label className="block text-sm font-semibold text-neutral-200">
           Tag your stressors
         </label>
-        <div className="space-y-4">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-4">
           {STRESSOR_TAG_GROUPS.map((group) => (
             <TagGroup
               key={group.category}
@@ -241,12 +228,14 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
         />
       </section>
 
-      {/* ── Coping Response Tags — grouped by KM category ── */}
-      <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
+      <div className="border-t border-neutral-800" />
+
+      {/* ── Coping Response Tags ── */}
+      <section className="space-y-3">
+        <label className="block text-sm font-semibold text-neutral-200">
           Coping response
         </label>
-        <div className="space-y-4">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-4">
           {COPING_TAG_GROUPS.map((group) => (
             <TagGroup
               key={group.category}
@@ -272,20 +261,40 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
         </p>
       )}
       {state.success && (
-        <p className="text-green-400 text-sm bg-green-950/40 border border-green-800 rounded-lg px-4 py-2">
-          {state.message}
-        </p>
+        <div className="flex flex-col items-center gap-3 py-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div className="w-14 h-14 rounded-full bg-green-900/50 border border-green-700 flex items-center justify-center">
+            <svg
+              className="w-7 h-7 text-green-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <div className="text-center space-y-1">
+            <p className="text-sm font-semibold text-green-400">Mood log saved!</p>
+            <p className="text-xs text-neutral-500">
+              Your entry has been recorded successfully.
+            </p>
+          </div>
+        </div>
       )}
 
       {/* ── Submit ── */}
       <button
         type="submit"
-        // 6. UPDATED: Ensure we check that moodScore prop is not null
         disabled={isPending || moodScore === null || !sleepQuality}
         className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {isPending ? "Saving..." : "Save mood log"}
       </button>
+
     </form>
   );
 }
