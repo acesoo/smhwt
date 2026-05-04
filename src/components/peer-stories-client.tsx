@@ -1,31 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { BookHeart, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PeerStoryForm } from "@/components/peer-story-form";
 import type { PeerStory } from "@/app/actions/peer-stories";
-
-const FORUM_TAG_GROUPS = [
-  {
-    category: "Shared Experience",
-    tags: ["#MyStory", "#WhatHelpedMe", "#StillStruggling", "#GettingBetter"],
-  },
-  {
-    category: "Peer Advice",
-    tags: ["#TryThis", "#WhatWorkedForMe", "#ResourceTip", "#AskingForAdvice"],
-  },
-  {
-    category: "Resource Sharing",
-    tags: ["#ArticleShare", "#ToolRecommendation"],
-  },
-  {
-    category: "Community Support",
-    tags: ["#YouAreNotAlone", "#CheckingIn"],
-  },
-] as const;
+import { FORUM_TAG_GROUPS } from "@/lib/constants/tags";
 
 const BASE_PILL =
   "px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150 cursor-pointer";
@@ -75,33 +57,6 @@ export function StoryFeedSkeleton() {
 
 function StoryCard({ story }: { story: PeerStory }) {
   const [expanded, setExpanded] = useState(false);
-  const [reactions, setReactions] = useState<Record<string, number>>({
-    "🤍": 0, "💪": 0, "🫂": 0,
-  });
-  const [myReaction, setMyReaction] = useState<string | null>(null);
-  const bodyRef = useRef<HTMLParagraphElement>(null);
-  const [isClamped, setIsClamped] = useState(false);
-
-  useEffect(() => {
-    if (bodyRef.current) {
-      setIsClamped(bodyRef.current.scrollHeight > bodyRef.current.clientHeight);
-    }
-  }, []);
-
-  function handleReaction(emoji: string) {
-    setReactions((prev) => {
-      const updated = { ...prev };
-      if (myReaction === emoji) {
-        updated[emoji] = Math.max(0, updated[emoji] - 1);
-        setMyReaction(null);
-      } else {
-        if (myReaction) updated[myReaction] = Math.max(0, updated[myReaction] - 1);
-        updated[emoji] = updated[emoji] + 1;
-        setMyReaction(emoji);
-      }
-      return updated;
-    });
-  }
 
   return (
     <Card className="bg-neutral-900 border-neutral-800 hover:border-violet-800/50 transition-colors">
@@ -113,21 +68,19 @@ function StoryCard({ story }: { story: PeerStory }) {
         <p className="text-sm font-semibold text-neutral-100 leading-snug">
           {story.title}
         </p>
-        <p ref={bodyRef} className={`text-xs text-neutral-400 leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>
+        <p className={`text-xs text-neutral-400 leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>
           {story.body}
         </p>
-        {(isClamped || expanded) && (
-          <button
-            onClick={() => setExpanded((e) => !e)}
-            className="flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 transition-colors"
-          >
-            {expanded ? (
-              <><ChevronUp className="w-3 h-3" /> Show less</>
-            ) : (
-              <><ChevronDown className="w-3 h-3" /> Read more</>
-            )}
-          </button>
-        )}
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          className="flex items-center gap-1 text-[11px] text-violet-400 hover:text-violet-300 transition-colors"
+        >
+          {expanded ? (
+            <><ChevronUp className="w-3 h-3" /> Show less</>
+          ) : (
+            <><ChevronDown className="w-3 h-3" /> Read more</>
+          )}
+        </button>
         <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-neutral-800">
           <span className="text-[10px] text-neutral-600">
             {formatDate(story.created_at)}
@@ -141,22 +94,6 @@ function StoryCard({ story }: { story: PeerStory }) {
               {tag}
             </Badge>
           ))}
-          <div className="ml-auto flex items-center gap-1">
-            {Object.entries(reactions).map(([emoji, count]) => (
-              <button
-                key={emoji}
-                onClick={() => handleReaction(emoji)}
-                className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs border transition-all ${
-                  myReaction === emoji
-                    ? "bg-violet-900/50 border-violet-600 text-violet-300"
-                    : "bg-neutral-800 border-neutral-700 text-neutral-400 hover:border-violet-600 hover:text-violet-300"
-                }`}
-              >
-                <span>{emoji}</span>
-                {count > 0 && <span>{count}</span>}
-              </button>
-            ))}
-          </div>
         </div>
       </CardContent>
     </Card>
@@ -165,21 +102,41 @@ function StoryCard({ story }: { story: PeerStory }) {
 
 export function PeerStoriesClient({ initialStories, fetchError }: Props) {
   const [activeTab, setActiveTab] = useState<"feed" | "share">("feed");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<"newest" | "liked">("newest");
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+  
+  // 1. Updated state to handle 'newest' and 'oldest'
+  const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
 
-  const filtered = (selectedTag
-    ? initialStories.filter((s) => s.forum_tags.includes(selectedTag))
-    : initialStories
-  ).sort((a, b) =>
-    sortBy === "newest"
-      ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      : 0
-  );
+  // 2. Fixed sorting logic so it calculates correctly for both options
+  const filtered = (
+    selectedTags.size === 0
+      ? initialStories
+      : initialStories.filter((s) =>
+          Array.from(selectedTags).every((tag) => s.forum_tags.includes(tag))
+        )
+  ).sort((a, b) => {
+    const timeA = new Date(a.created_at).getTime();
+    const timeB = new Date(b.created_at).getTime();
+    return sortBy === "newest" ? timeB - timeA : timeA - timeB;
+  });
 
   function handleTagClick(tag: string) {
-    setSelectedTag((prev) => (prev === tag ? null : tag));
+    setSelectedTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(tag)) {
+        next.delete(tag);
+      } else {
+        next.add(tag);
+      }
+      return next;
+    });
   }
+
+  function clearTags() {
+    setSelectedTags(new Set());
+  }
+
+  const selectedTagList = Array.from(selectedTags).sort();
 
   return (
     <main className="w-full max-w-4xl mx-auto px-4 pt-5 pb-32 space-y-5">
@@ -212,7 +169,7 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
       {activeTab === "feed" && (
         <div className="space-y-5">
 
-          {/* Anonymity Notice — feed only */}
+          {/* Anonymity Notice */}
           <div className="flex items-center gap-2 bg-violet-950/40 border border-violet-800/50 rounded-lg px-4 py-3">
             <ShieldCheck className="w-4 h-4 text-violet-400 shrink-0" />
             <p className="text-xs text-violet-300">
@@ -227,9 +184,9 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
             </p>
             <div className="flex flex-wrap gap-2 mb-4">
               <button
-                onClick={() => setSelectedTag(null)}
-                aria-pressed={!selectedTag}
-                className={pillClass(!selectedTag)}
+                onClick={clearTags}
+                aria-pressed={selectedTags.size === 0}
+                className={pillClass(selectedTags.size === 0)}
               >
                 All
               </button>
@@ -241,12 +198,12 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
                     {group.category}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {group.tags.map((tag) => (
+                    {[...group.tags].sort().map((tag) => (
                       <button
                         key={tag}
                         onClick={() => handleTagClick(tag)}
-                        aria-pressed={selectedTag === tag}
-                        className={pillClass(selectedTag === tag)}
+                        aria-pressed={selectedTags.has(tag)}
+                        className={pillClass(selectedTags.has(tag))}
                       >
                         {tag}
                       </button>
@@ -257,19 +214,22 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
             </div>
           </section>
 
-          {/* Results count + Sort */}
+          {/* Results count + sort */}
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
               {filtered.length} {filtered.length === 1 ? "story" : "stories"}
-              {selectedTag ? ` tagged ${selectedTag}` : ""}
+              {selectedTagList.length > 0
+                ? ` matching ${selectedTagList.join(" + ")}`
+                : ""}
             </p>
+            {/* 3. Updated select dropdown options */}
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as "newest" | "liked")}
+              onChange={(e) => setSortBy(e.target.value as "newest" | "oldest")}
               className="text-xs bg-neutral-800 border border-neutral-700 text-neutral-300 rounded-lg px-2 py-1 cursor-pointer"
             >
               <option value="newest">Newest</option>
-              <option value="liked">Most liked</option>
+              <option value="oldest">Oldest</option>
             </select>
           </div>
 
@@ -282,7 +242,10 @@ export function PeerStoriesClient({ initialStories, fetchError }: Props) {
             <div className="flex flex-col items-center gap-3 py-16 text-neutral-600">
               <BookHeart className="w-10 h-10" />
               <p className="text-sm text-center">
-                No stories yet{selectedTag ? ` tagged ${selectedTag}` : ""}.
+                No stories yet
+                {selectedTagList.length > 0
+                  ? ` matching ${selectedTagList.join(" + ")}`
+                  : ""}.
                 <br />Be the first to share yours.
               </p>
             </div>

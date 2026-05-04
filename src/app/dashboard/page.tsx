@@ -93,7 +93,7 @@ export default async function DashboardPage() {
           <ProfileDropdown username={userName} />
         </header>
 
-        <main className="flex-1 px-4 pt-5 pb-32 space-y-4">
+        <main className="w-full max-w-4xl mx-auto px-4 pt-5 pb-32 space-y-5">
           <DashboardSummaryCard
             userName={userName}
             streak={streak}

@@ -53,7 +53,7 @@ function TagGroup({
         {category}
       </p>
       <div className="flex flex-wrap gap-2">
-        {tags.map((tag) => (
+        {[...tags].sort().map((tag) => (
           <TagPill
             key={tag}
             label={tag}
@@ -75,6 +75,8 @@ export function JournalEntryForm() {
   );
   const formRef = useRef<HTMLFormElement>(null);
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
 
   // Add this new state to track the previous action state
   const [prevState, setPrevState] = useState(state);
@@ -85,6 +87,11 @@ export function JournalEntryForm() {
     if (state.success) {
       setSelectedTags(new Set());
     }
+    if (state.success) {
+      setSelectedTags(new Set());
+      setTitle("");
+      setBody("");
+}
   }
 
   // Only manipulate the DOM (uncontrolled elements) inside the effect
@@ -123,7 +130,9 @@ export function JournalEntryForm() {
           name="title"
           placeholder="Reflection after midterms..."
           maxLength={120}
-          className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
         />
       </section>
 
@@ -140,6 +149,8 @@ export function JournalEntryForm() {
           name="body"
           rows={6}
           placeholder="Today felt heavy. I kept second-guessing my answers even after I submitted..."
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
           className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder-neutral-500 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
         />
       </section>
@@ -215,7 +226,7 @@ export function JournalEntryForm() {
       {/* ── Submit ── */}
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isPending || !title.trim() || body.trim().length < 10}
         className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {isPending ? "Saving..." : "Save journal entry"}

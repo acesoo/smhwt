@@ -105,12 +105,19 @@ export async function saveMoodLog(
   });
 
   if (insertError) {
-    console.error("[saveMoodLog] Supabase insert error:", insertError.message);
+  console.error("[saveMoodLog] Supabase insert error:", insertError.message);
+  // Postgres unique_violation code — one mood log per day constraint
+  if (insertError.code === "23505") {
     return {
       success: false,
-      error: "Failed to save your mood log. Please try again.",
+      error: "You've already logged your mood today. Come back tomorrow!",
     };
   }
+  return {
+    success: false,
+    error: "Failed to save your mood log. Please try again.",
+  };
+}
 
   // ── 5. Revalidate the dashboard so stats reflect the new entry immediately ───
   revalidatePath("/dashboard");

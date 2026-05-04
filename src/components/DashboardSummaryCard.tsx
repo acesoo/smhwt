@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type MoodEntry = {
@@ -275,7 +273,7 @@ export function DashboardSummaryCard({
                     <span className="text-[10px] text-neutral-500">
                       Journal · {formatDate(entry.created_at)}
                     </span>
-                    {entry.tags?.slice(0, 2).map((tag) => (
+                    {entry.tags?.slice(0, 7).map((tag) => (
                       <span
                         key={tag}
                         className="text-[10px] text-neutral-500 bg-neutral-800 px-1.5 py-0.5 rounded-full border border-neutral-700"
