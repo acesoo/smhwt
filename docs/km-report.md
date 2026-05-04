@@ -1,5 +1,7 @@
 # KM Conceptual Report: SECI-Based Mental Health Informatics
 
+---
+
 ## 1. Introduction
 
 The mental health landscape for university students is increasingly characterized by a paradox of data: while students have more access to health-tracking tools than ever before, their actual "self-knowledge" remains low. This report proposes a Knowledge Management (KM) solution for a Student Wellness Tracker. Unlike standard logging apps, this project utilizes the **SECI Model** to facilitate the transition from fleeting emotional states to structured, actionable wellness insights. By treating the application as a "Ba" (a shared space for knowledge creation), we aim to solve the persistent issue of information fragmentation and ensure that personal data leads to genuine behavioral change.
@@ -111,10 +113,7 @@ The SMHWT addresses this gap by operationalizing the SECI spiral as a personal k
 - Nonaka, I. (1998). The concept of 'Ba': Building a foundation for knowledge creation. *California Management Review, 40*(3), 40–54.
 - Zhong, L., Cao, J., & Xue, F. (2024). The paradox of convenience: How information overload in mHealth apps leads to medical service overuse. *Frontiers in Public Health, 12*, 1408998.
 
----
 
-*This report was prepared as part of the Knowledge Management Capstone (ProfElec2).*
-*Project: Student Mental Health & Wellness Tracker (SMHWT) · Repository: github.com/acesoo/smhwt*
 
 ---
 
@@ -168,7 +167,7 @@ The taxonomy is organized into three layers:
 
 **Layer 2 — Coping Tags** (`coping_tags TEXT[]` on `mood_logs`): 11 tags across 4 categories (Problem-Centered, Emotion-Centered, Avoidance, Support Seeking), grounded in the Brief-COPE inventory (Fernández-Martin et al., 2022).
 
-**Layer 3 — Forum Tags** (`forum_tags TEXT[]` on `forum_posts`): 12 tags across 4 categories (Shared Experience, Peer Advice, Resource Sharing, Community Support), designed to classify peer knowledge shared in the Socialization layer.
+**Layer 3 — Peer Story Tags** (`tags TEXT[]` on `peer_stories`): 12 tags across 4 categories (Shared Experience, Peer Advice, Resource Sharing, Community Support), designed to classify peer knowledge shared in the Socialization layer. Stories are only visible in the public feed when `is_approved = true`, ensuring moderated knowledge quality.
 
 All three tag columns are enforced via a `valid_tags` lookup table in Supabase, with CHECK constraints applied through a custom `validate_tags()` PL/pgSQL function. This ensures no invalid tag can enter the system through any pathway — UI or direct database insert.
 
@@ -206,16 +205,43 @@ The complete knowledge flow through the SMHWT architecture can be summarized as 
 Each stage is supported by a specific application feature, a specific database structure, and a specific retrieval mechanism. The architecture is not incidental to the KM framework — it *is* the KM framework, implemented in code.
 
 ---
+---
 
-## 10. References
+## 10. Limitations of the KM Framework
 
-- Almalki, M., Gray, K., & Sanchez, F. M. (2015). The use of self-quantification systems for personal health information: Big data management activities and prospects. *Health Information Science and Systems, 3*(Suppl 1), S1.
-- Fernández-Martin, F. D., Arco-Tirado, J. L., Villoria-Prieto, J., & Villena-Martínez, M. D. (2022). Stressors and coping strategies in university students. *International Journal of Environmental Research and Public Health*.
-- Freire, C., Ferradás, M. D. M., Valle, A., Núñez, J. C., & Vallejo, G. (2016). Profiles of psychological well-being and coping strategies among university students. *Frontiers in Psychology, 7*, 1554.
-- Huang, H. Y., & Bashir, M. (2017). Users' adoption of mental health apps: Examining the impact of information cues. *JMIR mHealth and uHealth, 5*(6), e83.
-- Lin, Y. M., & Chen, F. S. (2009). Academic stress inventory of students at universities and colleges of technology. *World Transactions on Engineering and Technology Education*.
-- Nonaka, I., & Takeuchi, H. (1995). *The Knowledge-Creating Company*. Oxford University Press.
-- Nonaka, I. (1998). The concept of 'Ba': Building a foundation for knowledge creation. *California Management Review, 40*(3), 40–54.
-- Wenger, E. (1998). *Communities of Practice: Learning, Meaning, and Identity*. Cambridge University Press.
-- Zhang, C., Yang, Y., & Liu, C. (2022). Knowledge management-based mental health service model. *Sustainability*.
-- Zhong, L., Cao, J., & Xue, F. (2024). The paradox of convenience: How information overload in mHealth apps leads to medical service overuse. *Frontiers in Public Health, 12*, 1408998.
+Every knowledge management system operates within constraints, and the SMHWT is no exception. A candid assessment of the framework's limitations is necessary both for academic integrity and for guiding the project's future development.
+
+### 5.1 Individual Ba Cannot Replace Institutional Support
+
+The SMHWT is designed as a personal Ba — a private, individual knowledge space. This is a deliberate design choice grounded in the stigma research of Huang & Bashir (2017). However, it also means the application operates in isolation from the institutional support structures — counseling services, academic advisors, peer support programs — that form the broader mental health infrastructure of a university. A student who uses the SMHWT may develop significant self-awareness about their stress patterns but still lack the bridge between that self-knowledge and professional intervention. The application has no referral mechanism, no escalation pathway, and no integration with campus mental health services. This is a meaningful gap: Internalization produces self-regulatory capacity, but some mental health conditions require professional support that self-management cannot substitute.
+
+### 5.2 Voluntary Externalization is an Inconsistent Knowledge Source
+
+The Externalization stage — the foundation of the entire SECI spiral — depends entirely on the student's willingness and consistency in logging mood entries and journal reflections. Students who are most acutely distressed are likely to be the least consistent users: high cognitive load, reduced motivation, and the very symptoms the application is designed to address (anxiety, burnout, disengagement) are also the conditions most likely to interrupt daily logging habits. This creates a selection bias in the knowledge base: the system accumulates the most data during periods of relative wellness and the least data during the periods that matter most. The Combination stage can only surface patterns from data that exists; gaps in the externalization record produce gaps in the analytical insight.
+
+### 5.3 Tag Taxonomy is Static in a Dynamic Domain
+
+The research-based tag vocabulary defined in `km-architecture.md` is grounded in validated academic sources and covers 16 stressor categories and 11 coping response categories. However, the taxonomy was defined at a single point in time. Student wellness experiences are shaped by rapidly evolving social, technological, and institutional factors — new stressors emerge (e.g., AI-related academic anxiety, social media pressures not captured by existing categories) that the current taxonomy cannot classify. A static vocabulary enforced at the database level, while essential for Combination-stage data integrity, also limits the system's capacity to capture emergent or idiosyncratic experiences that fall outside the predefined ontology. This is a fundamental tension in controlled vocabulary design: specificity enables aggregation but constrains expressivity.
+
+### 5.4 Peer Forum Moderation Introduces Knowledge Quality Risk
+
+The Peer Support Forum enacts the Socialization stage through anonymous peer story sharing. While anonymity removes the stigma barrier, it also removes accountability. Without active moderation, the forum risks accumulating misinformation, harmful coping suggestions, or content that normalizes destructive behaviors. The current architecture includes an `is_approved` moderation flag and an Admin Panel, but moderation is a human process — it introduces latency, inconsistency, and the possibility of both under-moderation (harmful content approved) and over-moderation (valid peer knowledge suppressed). The quality of tacit knowledge transferred through the Socialization layer is therefore variable in ways that the structured, validated taxonomy of the Externalization layer is not.
+
+### 5.5 Scope Constraint: No Longitudinal Validation
+
+The SMHWT was developed within the constraints of a capstone project. The KM framework has been theoretically grounded and architecturally implemented, but it has not been empirically validated against longitudinal student wellness data. Claims about the application's capacity to facilitate Internalization and active self-management are, at this stage, theoretically supported but not empirically demonstrated. A rigorous evaluation would require a controlled study measuring self-awareness outcomes before and after sustained app use — research that falls outside the scope and timeline of this project but represents the necessary next step for any deployment beyond the academic context.
+
+---
+
+## 11. APA References
+
+- Almalki, M., Gray, K., & Sanchez, F. M. (2015). The use of self-quantification systems for personal health information: Big data management activities and prospects. *Health Information Science and Systems, 3*(Suppl 1), S1. https://doi.org/10.1186/2047-2501-3-S1-S1
+- Fernández-Martin, F. D., Arco-Tirado, J. L., Villoria-Prieto, J., & Villena-Martínez, M. D. (2022). Stressors and coping strategies in university students. *International Journal of Environmental Research and Public Health, 19*(3), 1–15. https://doi.org/10.3390/ijerph19031485
+- Freire, C., Ferradás, M. D. M., Valle, A., Núñez, J. C., & Vallejo, G. (2016). Profiles of psychological well-being and coping strategies among university students. *Frontiers in Psychology, 7*, 1554. https://doi.org/10.3389/fpsyg.2016.01554
+- Huang, H. Y., & Bashir, M. (2017). Users' adoption of mental health apps: Examining the impact of information cues. *JMIR mHealth and uHealth, 5*(6), e83. https://doi.org/10.2196/mhealth.6827
+- Lin, Y. M., & Chen, F. S. (2009). Academic stress inventory of students at universities and colleges of technology. *World Transactions on Engineering and Technology Education, 7*(2), 157–162.
+- Nonaka, I., & Takeuchi, H. (1995). *The knowledge-creating company: How Japanese companies create the dynamics of innovation*. Oxford University Press.
+- Nonaka, I. (1998). The concept of "Ba": Building a foundation for knowledge creation. *California Management Review, 40*(3), 40–54. https://doi.org/10.2307/41165942
+- Wenger, E. (1998). *Communities of practice: Learning, meaning, and identity*. Cambridge University Press.
+- Zhang, C., Yang, Y., & Liu, C. (2022). Knowledge management-based mental health service model for university students. *Sustainability, 14*(4), 2086. https://doi.org/10.3390/su14042086
+- Zhong, L., Cao, J., & Xue, F. (2024). The paradox of convenience: How information overload in mHealth apps leads to medical service overuse. *Frontiers in Public Health, 12*, 1408998. https://doi.org/10.3389/fpubh.2024.1408998
