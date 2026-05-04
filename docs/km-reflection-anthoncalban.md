@@ -14,5 +14,3 @@ The framework decision I am most confident about was choosing the SECI Model ove
 If I were to redo the project, I would study the limits of controlled vocabularies earlier. The taxonomy I built was academically grounded but static. I only noted this issue in the final sprint’s Limitations section, when it should have shaped the design from the start. A better approach would have been to allow students to suggest new tags for review and inclusion. A vocabulary that cannot evolve will eventually fail to represent users’ experiences, which in mental health contexts affects more than just data quality.
 
 The most important lesson I will carry forward is the concept of the Ba. Nonaka’s idea—that knowledge creation requires an enabling environment—applies to software architecture as much as organizational theory. We did not build a mood tracker. We built a knowledge space. That distinction matters.
-
-asdasd
