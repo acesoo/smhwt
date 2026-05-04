@@ -4,7 +4,6 @@ import { useState } from "react";
 import { BookHeart, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PeerStoryForm } from "@/components/peer-story-form";
 import type { PeerStory } from "@/app/actions/peer-stories";
 import { FORUM_TAG_GROUPS } from "@/lib/constants/tags";
@@ -30,29 +29,6 @@ function formatDate(iso: string) {
 interface Props {
   initialStories: PeerStory[];
   fetchError: string | null;
-}
-
-export function StoryFeedSkeleton() {
-  return (
-    <div className="space-y-3">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <Card key={i} className="bg-neutral-900 border-neutral-800">
-          <CardContent className="pt-4 pb-4 space-y-3">
-            <Skeleton className="h-3 w-20 bg-neutral-800" />
-            <Skeleton className="h-4 w-3/4 bg-neutral-800" />
-            <Skeleton className="h-3 w-full bg-neutral-800" />
-            <Skeleton className="h-3 w-full bg-neutral-800" />
-            <Skeleton className="h-3 w-2/3 bg-neutral-800" />
-            <div className="flex gap-2 pt-1 border-t border-neutral-800">
-              <Skeleton className="h-3 w-16 bg-neutral-800" />
-              <Skeleton className="h-3 w-12 bg-neutral-800" />
-              <Skeleton className="h-3 w-12 bg-neutral-800" />
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
 }
 
 function StoryCard({ story }: { story: PeerStory }) {
