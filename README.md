@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Overview](#1-overview)
 2. [KM Framework](#2-km-framework)
@@ -276,15 +276,31 @@ Each member's contributions are verified through GitHub commit history, pull req
 > Screenshots below are taken from the live deployment at https://smhwt.vercel.app
 
 ### Dashboard
-![Dashboard view showing mood summary, goal progress, and insight cards]![alt text](image-1.png)
+Dashboard view showing mood summary, goal progress, and insight cards
+
+<img width="1919" height="938" alt="image" src="https://github.com/user-attachments/assets/6653cd7e-5f54-4f14-93b7-ffe63c24e048" />
+
+
 *The central dashboard aggregates the student's mood trends, active wellness goals, and personalized insights — implementing the SECI Combination stage.*
 
 ### Mood Tracker & Journal
-![Mood logging screen with emoji scale and stressor tag selector]![alt text](image.png)
+Mood logging screen with emoji scale and stressor tag selector
+
+Mood log:
+<img width="1901" height="937" alt="image" src="https://github.com/user-attachments/assets/58861b36-bd72-4242-8c60-31ee4cb389aa" />
+
+Journal log:
+<img width="1900" height="932" alt="image" src="https://github.com/user-attachments/assets/29795367-6a67-433b-b524-beda058ca3ad" />
+
+
 *Students log their daily mood and journal entries using a research-validated stressor tag taxonomy — implementing the SECI Externalization stage.*
 
 ### Peer Support Stories Feed
-![Stories feed showing anonymous story cards with tag badges and filter bar]![alt text](image-2.png)
+Stories feed showing anonymous story cards with tag badges and filter bar
+
+<img width="1901" height="937" alt="image" src="https://github.com/user-attachments/assets/c713967f-5e97-45d7-ab06-f1d004e1c357" />
+
+
 *The peer stories feed displays approved anonymous submissions, filterable by tag. No author identity is shown at any point — implementing the SECI Socialization stage.*
 
 ---
