@@ -337,4 +337,4 @@ See the full [LICENSE](./LICENSE) file for details.
 
 ---
 
-<p align="center">ProfElec2 — KM Capstone | AY 2026–2027</p>
+<p align="center">ProfElec2 — KM Capstone</p>
