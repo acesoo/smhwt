@@ -332,67 +332,66 @@
 ---
 
 ## Entry 15
-
+ 
 **Date:** May 1, 2026
 **Task:** S4-DEV-01 — Build Resource Library
-
+ 
 ### Prompt Given
-> "Asked for Next.js Client and Server components using shadcn/ui to build a Resource Library filterable by KM Taxonomy tags via Supabase's `.contains()` method, plus a mock data SQL snippet. Later asked how to properly include the SQL insert query (with real-world NIH/APA links) in the PR description."
-
+> "Asked for Next.js Client and Server components using `shadcn/ui` to build a Resource Library filterable by KM Taxonomy tags via Supabase's `.contains()` method, plus a mock data SQL snippet. Later asked how to properly include the SQL insert query (with real-world NIH/APA links) in the PR description."
+ 
 ### What the AI Produced
-- Generated the Next.js UI components successfully utilizing shadcn/ui and the Supabase array filtering logic.
+- Generated the Next.js UI components using `shadcn/ui` Card, Badge, and Input primitives alongside the Supabase array filtering logic.
 - Provided a SQL insert query containing real-world links (NIH, APA).
 - Initially suggested instructing reviewers to use `npx supabase db reset`, but later recommended moving the SQL into a `supabase/seed.sql` file as an industry standard.
 
 ### What I Changed, Rejected, or Improved
-- **Rejected** the AI's generated `shadcn/ui` components for now. I decided to build the MVP using standard HTML and Tailwind CSS to prioritize getting the Supabase data fetching and filtering working first. I will integrate `shadcn/ui` during the Polish phase (S5).
 - Accepted the file restructuring (`seed.sql` vs `migrations`) to prevent dropping production tables.
 - **Rejected** the AI's suggestion to instruct reviewers to use `npx supabase db reset` for testing. I realized this would wipe my teammates' local databases and destroy their mock data.
 - Improved the PR instructions by providing the SQL as a standalone file for safe, manual execution.
 
 ### What I Learned or Decided
 - Supabase `.contains()` is highly efficient for tag-based array filtering.
-- Deferring complex UI implementations to focus on core backend functionality (data fetching) is a practical agile development strategy.
 - Local developer experience (DX) is important; avoiding destructive CLI commands like `db reset` in shared environments prevents blocking teammates.
 
 ---
 
 ## Entry 16
-
+ 
 **Date:** May 1, 2026
 **Task:** S4-DEV-02 — Build Search & Retrieve
-
+ 
 ### Prompt Given
-> "Requested a unified Search & Retrieve dashboard using shadcn/ui to filter `journal_entries` and `resources` by keyword/tag, including a KM Pattern Identification requirement. Also asked for the PR description and how to resolve a Git mistake where I pushed files for both S4-DEV-01 and S4-DEV-02 to the same branch despite project rules requiring separate PRs."
-
+> "Requested a unified Search & Retrieve dashboard using `shadcn/ui` to filter `journal_entries` and `resources` by keyword/tag, including a KM Pattern Identification requirement. Also asked for the PR description and how to resolve a Git mistake where I pushed files for both S4-DEV-01 and S4-DEV-02 to the same branch despite project rules requiring separate PRs."
+ 
 ### What the AI Produced
 - Provided the complex Supabase query logic to join/cross-reference entries and calculate the KM Pattern averages.
-- Generated the UI code heavily reliant on `shadcn/ui`.
+- Generated the UI code using `shadcn/ui` Card, Badge, and Input components.
 - Generated the S4-DEV-02 PR description adhering to the KM Taxonomy mapping.
 - Provided a step-by-step "Git magic" untangle process: using `git log`, `git branch`, `git reset --hard`, and `git push --force origin` to split the PRs.
 
 ### What I Changed, Rejected, or Improved
-- **Rejected** the immediate implementation of the AI's `shadcn/ui` components. Continued using basic Tailwind UI elements to strictly focus on making the complex Supabase query logic and KM Pattern requirements work. `shadcn` styling is officially deferred to S5.
 - Implemented the pattern identification logic carefully to ensure it matched the architecture in `km-architecture.md`.
 - Chose the strict "Untangle" approach over the AI's alternative "Roll With It" (combining PRs) approach to ensure I strictly follow the PM's individual issue tracking rules.
 - Successfully executed the terminal commands to separate the features into two distinct PRs without losing any code.
+- Later fixed a tag filtering state bug where `runSearch` was called inside the `setState` callback, causing stale state and incorrect results. Moved the `next` Set construction outside the updater function to guarantee correctness.
 
 ### What I Learned or Decided
 - You cannot open two separate PRs from the exact same branch simultaneously.
 - `git reset --hard <hash>` followed by a force push is a safe and powerful way to edit PR history as long as nobody else is working on that specific branch.
+- React state updater callbacks do not guarantee synchronous execution; computing derived values outside the callback before passing them to both `setState` and other functions is the safe pattern.
 
 ---
 
 ## Entry 17
-
+ 
 **Date:** May 1, 2026
 **Task:** S4-DEV-03 — Build Peer Support Stories: anonymous submission form
-
+ 
 ### Prompt Given
 > "Asked for a Next.js Server Action and UI form to submit anonymous peer stories to a new `peer_stories` table. Required strict RLS policies to store `submitted_by` for moderation but never expose it. Also requested KM taxonomy forum tags grouped correctly. Later asked for help debugging a Vercel build error ('Module not found') caused by accidentally pushing an incomplete file for the next task."
-
+ 
 ### What the AI Produced
-- Generated the SQL migration with RLS policies, the Server Action `submitPeerStory`, and the `peer-story-form.tsx` UI.
+- Generated the SQL migration with RLS policies, the Server Action `submitPeerStory`, and the `peer-story-form.tsx` UI using `shadcn/ui` Input.
 - Identified that the Vercel build error was caused by Next.js/TypeScript strictly scanning the entire `src` directory for the incomplete `page.tsx`.
 - Provided Git troubleshooting steps, explaining how to use `git stash -u` for untracked files and the "Extension Trick" (renaming to `.txt`) to hide the file from the compiler.
 
@@ -400,6 +399,7 @@
 - Accepted the database architecture where `submitted_by` is securely logged but deliberately excluded from the TypeScript `PeerStory` type.
 - Used the `.txt` extension trick to bypass the strict Next.js/TypeScript compiler and fix the PR build. 
 - Utilized `git stash -u` to save my uncommitted S4-DEV-04 files safely while untangling the PR, rather than deleting my hard work.
+- Later removed hardcoded `FORUM_TAG_GROUPS` from this component in favour of the centralised `tags.ts` export, and applied alphabetical tag sorting within each group.
 
 ### What I Learned or Decided
 - Privacy and anonymity can be enforced securely at the database query level by omitting identifying columns from `SELECT` statements, even if they exist for RLS.
@@ -408,21 +408,22 @@
 ---
 
 ## Entry 18
-
+ 
 **Date:** May 1, 2026
 **Task:** S4-DEV-04 — Build Peer Stories Feed: public read-only view
-
+ 
 ### Prompt Given
 > "Asked to build the public-facing Peer Stories feed to display approved stories (`is_approved = true`) as cards with tag badges. Required tag filtering and integration into the S4-DEV-02 Search & Retrieve dashboard. Emphasized strictly hiding any author information."
-
+ 
 ### What the AI Produced
 - Generated the `getApprovedStories` database query fetching only approved stories.
-- Provided the UI components for the card layout and tag filtering.
+- Provided the UI components for the card layout and tag filtering using `shadcn/ui` Card and Badge.
 - Generated the PR description covering the unified search integration and strict anonymity verification.
 
 ### What I Changed, Rejected, or Improved
-- Continued to defer the AI's suggested `shadcn/ui` components until the S5 Polish phase. Used standard Tailwind CSS to build the feed and prioritize data flow, database filtering, and KM taxonomy alignment.
 - Carefully reviewed the unified search query to ensure it smoothly handled both `journal_entries` (S4-DEV-02) and the newly added `peer_stories` without exposing user data.
+- During the Polish phase, removed emoji reactions and the "Most Liked" sort option to preserve the pressure-free, anonymous ethos of the KM Socialization layer.
+- Upgraded the feed from single-select to multi-select tag filtering with AND logic, and applied alphabetical tag sorting within each group.
 
 ### What I Learned or Decided
 - Filtering sensitive content securely requires a two-pronged approach: database-level filtering (`is_approved = true`) to protect the data, combined with UI-level tag filtering for user experience.
@@ -431,13 +432,13 @@
 ---
 
 ## Entry 19
-
+ 
 **Date:** May 2, 2026
 **Task:** S4-DEV-05 — Build Dashboard and Profile
-
+ 
 ### Prompt Given
 > "Asked to implement the central `/dashboard` page and a `/profile` settings page. Later expanded the profile page to include password changes, a 'Danger Zone' for immediate account deletion via Supabase RPC, and a conditionally rendered link to the Admin Panel for moderators. Requested refactoring `ProfileForm` and `SignOutButton` to use `shadcn/ui` Buttons, root redirects, and the removal of the standalone Journal page."
-
+ 
 ### What the AI Produced
 - Generated the `/dashboard` page logic, including streak calculations and recent entry fetches.
 - Created the `/profile` page with comprehensive Server Actions to safely update display names, change passwords, and instantly delete the account via a Supabase RPC.
@@ -446,13 +447,14 @@
 
 ### What I Changed, Rejected, or Improved
 - Intentionally deferred the "globally accessible avatar dropdown" as it is a UX/UI Designer deliverable (`S4-UX-06`), focusing instead on building the robust `/profile` settings layer beneath it.
-- Rejected a suggested Theme Toggle feature, keeping the scope strictly focused on core account management.
+- Rejected a suggested Theme Toggle feature after discovering it caused persistent hydration errors due to all components using hardcoded dark Tailwind classes — a full redesign would be required to support it meaningfully.
 - Pivoted from my original "soft delete" metadata idea to a complete, immediate **hard deletion** using a Supabase RPC, requiring a strict "DELETE" text confirmation to prevent accidental self-destruction.
 - Grouped the destructive account actions into a standard "Danger Zone" UI pattern to improve UX and visual hierarchy.
 
 ### What I Learned or Decided
 - Supabase prevents users from directly deleting their own `auth.users` record for security reasons. Using an RPC allows a user to securely trigger their own deletion without needing a service role key on the client.
 - Fetching user roles (like `is_admin`) directly in Next.js Server Components allows for secure, seamless conditional UI rendering (like the Admin link) without any client-side layout shift or exposed state.
+- A theme toggle only works if the entire component tree uses CSS variable-based classes. Hardcoded utility classes like `bg-neutral-950` do not respond to a theme class switch at runtime.
 
 ---
 
@@ -482,21 +484,26 @@
 ---
 
 ## Entry 21
-
-**Date:** May 2, 2026
-**Task:** S4-DEV-07 — Add CHANGELOG.md v0.2.0 entry listing Build Sprint 2 features
-
+ 
+**Date:** May 4, 2026
+**Task:** S4-DEV-07 — Add CHANGELOG.md v0.2.0 entry
+ 
 ### Prompt Given
-> 
-
+> "Provided two PR descriptions covering all Sprint 4 changes and asked the AI to refine and merge them into a comprehensive v0.2.0 CHANGELOG entry following the existing Keep a Changelog format. Also asked whether contributing members should be listed in the CHANGELOG given they are already documented in the README."
+ 
 ### What the AI Produced
-
+- A fully structured v0.2.0 entry organized under Added, Changed, Fixed, and Removed headers.
+- Merged both PR descriptions into consolidated, plain-language bullet points without duplication.
+- Recommended adding a single contributors line at the top of the version block as a lightweight compromise between satisfying the issue requirement and avoiding redundancy with the README.
 
 ### What I Changed, Rejected, or Improved
-
+- Caught and removed an inaccurate claim that the unified search also queried peer stories — it only queries `journal_entries` and `resources`.
+- Accepted the single-line contributors format as a practical middle ground rather than a full members section.
+- Verified every entry against the actual committed code before finalizing.
 
 ### What I Learned or Decided
-
+- A CHANGELOG is a user-facing document and must reflect only what is verifiably deployed. Cross-referencing entries against actual commits before publishing prevents misinformation.
+- Separating "what changed" (CHANGELOG) from "who contributed" (README) follows standard open-source documentation practice and avoids maintenance overhead from duplicating the same information in two places.
 
 ---
 
