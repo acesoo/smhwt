@@ -205,7 +205,6 @@ The complete knowledge flow through the SMHWT architecture can be summarized as 
 Each stage is supported by a specific application feature, a specific database structure, and a specific retrieval mechanism. The architecture is not incidental to the KM framework — it *is* the KM framework, implemented in code.
 
 ---
----
 
 ## 10. Limitations of the KM Framework
 
