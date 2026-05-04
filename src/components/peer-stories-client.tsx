@@ -35,7 +35,7 @@ function StoryCard({ story }: { story: PeerStory }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800 hover:border-violet-800/50 transition-colors">
+    <Card className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-md shadow-xl animate-in fade-in duration-500">
       <CardContent className="pt-4 pb-4 space-y-3">
         <div className="flex items-center gap-1.5">
           <ShieldCheck className="w-3 h-3 text-violet-500" />

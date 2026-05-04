@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, Search, BookOpen } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ExternalLink, BookOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { COPING_TAG_GROUPS } from "@/lib/constants/tags";
+import { ALL_TAGS } from "@/lib/constants/tags";
 import type { Resource } from "@/app/actions/resources";
 
 interface Props {
@@ -13,30 +12,37 @@ interface Props {
   fetchError: string | null;
 }
 
+// ── Glassmorphism Pills ──
 const BASE_PILL =
-  "px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150";
-const ACTIVE_PILL = "bg-blue-600 border-blue-500 text-white";
+  "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 cursor-pointer";
+const ACTIVE_PILL = "bg-blue-600/80 border-blue-400 text-white shadow-[0_0_12px_rgba(59,130,246,0.4)] backdrop-blur-sm";
 const INACTIVE_PILL =
-  "bg-transparent border-neutral-600 text-neutral-400 hover:border-blue-500 hover:text-blue-400";
+  "bg-transparent border-white/10 text-neutral-400 hover:border-blue-500/50 hover:text-blue-300";
 
 function pillClass(active: boolean) {
   return `${BASE_PILL} ${active ? ACTIVE_PILL : INACTIVE_PILL}`;
 }
 
 export function ResourceLibrary({ initialResources, fetchError }: Props) {
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  // 1. Changed to a Set to hold multiple tags
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
   const filtered = initialResources.filter((r) => {
-    const matchesTag = !selectedTag || r.tags.includes(selectedTag);
-    const matchesSearch =
-      !searchQuery ||
-      r.title.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTag && matchesSearch;
+    // Check if the resource includes EVERY tag you currently have selected
+    const matchesTag =
+      selectedTags.size === 0 || 
+      Array.from(selectedTags).every((t) => r.tags.includes(t));
+    return matchesTag;
   });
 
+  // 3. Updated toggle logic to add/remove tags from the Set
   function handleTagClick(tag: string) {
-    setSelectedTag((prev) => (prev === tag ? null : tag));
+    setSelectedTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
+      return next;
+    });
   }
 
   const resultLabel =
@@ -45,53 +51,31 @@ export function ResourceLibrary({ initialResources, fetchError }: Props) {
   return (
     <main className="w-full max-w-4xl mx-auto px-4 pt-5 pb-32 space-y-6">
 
-      {/* ── Search Input ── */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 pointer-events-none" />
-        <Input
-          type="search"
-          placeholder="Search resources..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9 bg-neutral-800 border-neutral-700 text-neutral-200 placeholder:text-neutral-500 focus-visible:ring-blue-600"
-        />
-      </div>
+      {/* ── All Tags Filter ── */}
+      <section aria-label="Filter resources by topic" className="space-y-4">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+          Filter by topic
+        </h2>
 
-      {/* ── Coping Tag Filters ── */}
-      <section aria-label="Filter by coping strategy">
-        <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">
-          Filter by coping strategy
-        </p>
-
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-2">
+          {/* "All" button (Clears the Set) */}
           <button
-            onClick={() => setSelectedTag(null)}
-            aria-pressed={!selectedTag}
-            className={pillClass(!selectedTag)}
+            onClick={() => setSelectedTags(new Set())}
+            className={pillClass(selectedTags.size === 0)}
           >
             All
           </button>
-        </div>
 
-        <div className="space-y-4">
-          {COPING_TAG_GROUPS.map((group) => (
-            <div key={group.category} className="space-y-2">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-600">
-                {group.category}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {group.tags.map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => handleTagClick(tag)}
-                    aria-pressed={selectedTag === tag}
-                    className={pillClass(selectedTag === tag)}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
+          {/* Sort ALL_TAGS alphabetically before mapping */}
+          {[...ALL_TAGS].sort().map((tag) => (
+            <button
+              key={tag}
+              onClick={() => handleTagClick(tag)}
+              aria-pressed={selectedTags.has(tag)}
+              className={pillClass(selectedTags.has(tag))}
+            >
+              {tag}
+            </button>
           ))}
         </div>
       </section>
@@ -100,7 +84,7 @@ export function ResourceLibrary({ initialResources, fetchError }: Props) {
       <section aria-label="Resource results">
         <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">
           {resultLabel}
-          {selectedTag ? ` tagged ${selectedTag}` : ""}
+          {selectedTags.size > 0 ? ` tagged ${Array.from(selectedTags).join(", ")}` : ""}
         </p>
 
         {fetchError ? (
@@ -117,7 +101,7 @@ export function ResourceLibrary({ initialResources, fetchError }: Props) {
             {filtered.map((resource) => (
               <Card
                 key={resource.id}
-                className="bg-neutral-900 border-neutral-800 hover:border-neutral-600 transition-colors"
+                className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-md shadow-xl animate-in fade-in duration-500"
               >
                 <CardContent className="pt-4 pb-4 space-y-3">
                   <div className="flex items-start justify-between gap-3">

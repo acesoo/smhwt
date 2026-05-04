@@ -8,11 +8,10 @@ import { FORUM_TAG_GROUPS } from "@/lib/constants/tags";
 
 const initialState: StoryFormState = { success: false };
 
-const BASE_PILL =
-  "px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150";
-const ACTIVE_PILL = "bg-violet-600 border-violet-500 text-white";
-const INACTIVE_PILL =
-  "bg-transparent border-neutral-600 text-neutral-400 hover:border-violet-500 hover:text-violet-400";
+// ── Glassmorphism Pills ──
+const BASE_PILL = "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 cursor-pointer";
+const ACTIVE_PILL = "bg-violet-600/80 border-violet-400 text-white shadow-[0_0_12px_rgba(139,92,246,0.4)] backdrop-blur-sm";
+const INACTIVE_PILL = "bg-transparent border-white/10 text-neutral-400 hover:border-violet-500/50 hover:text-violet-300";
 
 function pillClass(active: boolean) {
   return `${BASE_PILL} ${active ? ACTIVE_PILL : INACTIVE_PILL}`;
@@ -118,7 +117,7 @@ export function PeerStoryForm() {
           </p>
         </div>
 
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-4">
+        <div className="space-y-4">
           {FORUM_TAG_GROUPS.map((group) => (
             <div key={group.category} className="space-y-2">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-600">

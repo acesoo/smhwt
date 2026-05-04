@@ -7,26 +7,18 @@ import { ACADEMIC_IMPACT_OPTIONS } from "@/lib/taxonomy";
 
 const initialState: MoodLogFormState = { success: false };
 
-function TagPill({
-  label,
-  selected,
-  onToggle,
-}: {
-  label: string;
-  selected: boolean;
-  onToggle: () => void;
-}) {
+function TagPill({ label, selected, onToggle }: { label: string; selected: boolean; onToggle: () => void; }) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-pressed={selected}
       className={`
-        px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150
+        px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300 backdrop-blur-sm
         ${
           selected
-            ? "bg-blue-600 border-blue-500 text-white"
-            : "bg-transparent border-neutral-600 text-neutral-400 hover:border-blue-500 hover:text-blue-400"
+            ? "bg-blue-600/80 border-blue-400 text-white shadow-[0_0_12px_rgba(59,130,246,0.4)]"
+            : "bg-white/5 border-white/10 text-neutral-300 hover:border-blue-500/50 hover:bg-white/10"
         }
       `}
     >
@@ -134,7 +126,7 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
           name="note"
           rows={2}
           placeholder="Feeling okay, a bit tired after class..."
-          className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder:text-neutral-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 backdrop-blur-sm transition-all resize-none"
         />
       </section>
 
@@ -209,7 +201,7 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
         <label className="block text-sm font-semibold text-neutral-200">
           Tag your stressors
         </label>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-4">
+        <div className="space-y-4">
           {STRESSOR_TAG_GROUPS.map((group) => (
             <TagGroup
               key={group.category}
@@ -235,7 +227,7 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
         <label className="block text-sm font-semibold text-neutral-200">
           Coping response
         </label>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-4">
+        <div className="space-y-4">
           {COPING_TAG_GROUPS.map((group) => (
             <TagGroup
               key={group.category}
@@ -290,7 +282,7 @@ export function MoodLogForm({ moodScore }: MoodLogFormProps) {
       <button
         type="submit"
         disabled={isPending || moodScore === null || !sleepQuality}
-        className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-150 bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 text-white font-semibold rounded-xl py-3.5 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.25)] flex justify-center items-center backdrop-blur-sm"
       >
         {isPending ? "Saving..." : "Save mood log"}
       </button>

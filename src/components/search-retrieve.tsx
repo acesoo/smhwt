@@ -174,8 +174,8 @@ export function SearchRetrieve() {
                 className={`px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150
                   ${
                     active
-                      ? "bg-blue-600 border-blue-500 text-white"
-                      : "bg-transparent border-neutral-700 text-neutral-400 hover:border-blue-500 hover:text-blue-400"
+                      ? "bg-blue-600/80 border-blue-400 text-white shadow-[0_0_12px_rgba(59,130,246,0.4)]"
+                      : "bg-white/5 border-white/10 text-neutral-300 hover:border-blue-500/50 hover:bg-white/10"
                   }`}
               >
                 {tag}
@@ -214,7 +214,7 @@ export function SearchRetrieve() {
                   {results.journals.map((j) => (
                     <Card
                       key={j.id}
-                      className="bg-neutral-900 border-neutral-800 hover:border-neutral-600 transition-colors"
+                      className="bg-white/5 border border-white/10 rounded-2xl p-2 backdrop-blur-md shadow-xl animate-in fade-in duration-500"
                     >
                       <CardContent className="pt-4 pb-4 space-y-2">
                         <p className="text-sm font-semibold text-neutral-100">
@@ -255,7 +255,7 @@ export function SearchRetrieve() {
                   {results.resources.map((r) => (
                     <Card
                       key={r.id}
-                      className="bg-neutral-900 border-neutral-800 hover:border-neutral-600 transition-colors"
+                      className="bg-white/5 border border-white/10 rounded-2xl p-2 backdrop-blur-md shadow-xl animate-in fade-in duration-500"
                     >
                       <CardContent className="pt-4 pb-4 space-y-2">
                         <div className="flex items-start justify-between gap-3">

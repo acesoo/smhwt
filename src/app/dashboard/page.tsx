@@ -30,64 +30,57 @@ function calcStreak(dates: string[]): number {
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
   if (!user) redirect("/login");
 
-  const sevenDaysAgoDate = new Date();
-  sevenDaysAgoDate.setDate(sevenDaysAgoDate.getDate() - 7);
-  const sevenDaysAgo = sevenDaysAgoDate.toISOString();
+  const userName = user.user_metadata?.full_name?.split(" ")[0] ?? user.email?.split("@")[0] ?? "Player";
 
-  const { data: moodRows } = await supabase
+  // Fetch data
+  const { data: moodData } = await supabase
     .from("mood_logs")
-    .select("mood_score, note, logged_at")
-    .eq("user_id", user.id)
-    .gte("logged_at", sevenDaysAgo)
-    .order("logged_at", { ascending: false });
+    .select("logged_at, mood_score, note")
+    .order("logged_at", { ascending: false })
+    .limit(7);
 
-  const recentMoodEntries = (moodRows ?? []).map((r) => ({
-    date: r.logged_at.slice(0, 10),
-    score: r.mood_score,
-    note: r.note ?? undefined,
-  }));
-
-  const { data: journalRows } = await supabase
+  const { data: journalData } = await supabase
     .from("journal_entries")
     .select("id, title, created_at, tags")
-    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(3);
 
-  const recentJournalEntries = (journalRows ?? []).map((r) => ({
-    id: r.id,
-    title: r.title,
-    created_at: r.created_at,
-    tags: r.tags ?? [],
-  }));
-
-  const { data: goalRows } = await supabase
+  const { data: goalsData } = await supabase
     .from("wellness_goals")
     .select("id, goal, status")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .eq("status", "active");
 
-  const activeGoals = (goalRows ?? []).map((r) => ({
-    id: r.id,
-    goal: r.goal,
-    status: r.status as "active" | "completed" | "abandoned",
+  const { data: allMoodsForStreak } = await supabase
+    .from("mood_logs")
+    .select("logged_at")
+    .order("logged_at", { ascending: false });
+
+  const streakDates = allMoodsForStreak?.map((m) => m.logged_at.slice(0, 10)) || [];
+  const streak = calcStreak(streakDates);
+
+  const recentMoodEntries = (moodData || []).map((m) => ({
+    date: m.logged_at.slice(0, 10),
+    score: m.mood_score,
+    note: m.note || undefined,
   }));
 
-  const allMoodDates = (moodRows ?? []).map((r) => r.logged_at.slice(0, 10));
-  const streak = calcStreak(allMoodDates);
-
-  const userName =
-    user.user_metadata?.full_name?.split(" ")[0] ??
-    user.email?.split("@")[0] ??
-    "there";
+  const activeGoals = goalsData || [];
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <div className="mx-auto w-full max-w-md md:max-w-7xl min-h-screen flex flex-col relative border-x border-neutral-800/60">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col relative overflow-hidden">
+      
+      {/* ── Ambient background glows (Fixed to stay during scroll) ── */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
+        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl" />
+        <div className="absolute top-1/4 -right-40 w-96 h-96 rounded-full bg-violet-600/10 blur-3xl" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-blue-950/30 blur-3xl" />
+      </div>
 
-        <header className="sticky top-0 z-10 bg-neutral-950/90 backdrop-blur-md flex items-center justify-between px-4 py-4 border-b border-neutral-800">
+      <div className="mx-auto w-full max-w-md md:max-w-7xl min-h-screen flex flex-col relative z-10 border-x border-white/5">
+        <header className="sticky top-0 z-20 bg-neutral-950/60 backdrop-blur-xl flex items-center justify-between px-4 py-4 border-b border-white/10">
           <span className="w-10" />
           <h1 className="text-base font-semibold text-neutral-100 text-center">Dashboard</h1>
           <ProfileDropdown username={userName} />
@@ -98,21 +91,22 @@ export default async function DashboardPage() {
             userName={userName}
             streak={streak}
             recentMoodEntries={recentMoodEntries}
-            recentJournalEntries={recentJournalEntries}
+            recentJournalEntries={journalData || []}
             activeGoals={activeGoals}
           />
+          
           <Link
             href="/resources"
-            className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-neutral-600 transition-colors group"
+            className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 backdrop-blur-sm transition-all duration-300 group shadow-lg"
           >
             <div className="flex items-center gap-3">
-              <Library className="w-4 h-4 text-neutral-500 group-hover:text-blue-400 transition-colors" />
-              <span className="text-sm font-medium text-neutral-300 group-hover:text-neutral-100 transition-colors">
+              <Library className="w-4 h-4 text-neutral-400 group-hover:text-blue-400 transition-colors drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+              <span className="text-sm font-medium text-neutral-200 group-hover:text-white transition-colors">
                 Browse Resources
               </span>
             </div>
-            <span className="text-xs text-neutral-600 group-hover:text-neutral-400 transition-colors">
-              Mental health articles &amp; tools →
+            <span className="text-xs text-neutral-500 group-hover:text-blue-300 transition-colors">
+              View all →
             </span>
           </Link>
         </main>
