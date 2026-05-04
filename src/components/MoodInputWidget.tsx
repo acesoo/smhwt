@@ -225,34 +225,29 @@ export function MoodInputWidget({
         </div>
       </section>
 
-      {/* ── Emoji Quick-Select ── */}
-      <section>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
+      {/* ── Mood Emoji Selector ── */}
+      <section className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-md shadow-xl">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4 text-center">
           How are you feeling today?
         </label>
-        <div className="flex gap-2 justify-between">
-          {EMOJI_OPTIONS.map(({ score, emoji, label }) => {
-            const isSelected = selectedScore !== null &&
-              selectedScore >= score - 1 && selectedScore <= score;
-
+        <div className="grid grid-cols-5 gap-2">
+          {[1, 3, 5, 7, 9].map((baseScore) => {
+            const { emoji, label } = getMoodEmoji(baseScore);
+            const isSelected = selectedScore !== null && selectedScore >= baseScore && selectedScore < baseScore + 2;
+            
             return (
               <button
-                key={score}
+                key={baseScore}
                 type="button"
-                onClick={() => onMoodSelect?.(score)}
-                aria-label={`Mood: ${label} (${score} out of 10)`}
-                aria-pressed={isSelected}
-                className={`
-                  flex-1 flex flex-col items-center justify-center gap-1.5
-                  py-2.5 rounded-xl border text-xs font-medium transition-all duration-150
-                  ${isSelected
-                    ? "bg-blue-900/60 border-blue-500 text-blue-300 scale-105"
-                    : "bg-neutral-800 border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-neutral-300 active:scale-95"
-                  }
-                `}
+                onClick={() => onMoodSelect?.(baseScore + 1)}
+                className={`flex flex-col items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 border ${
+                  isSelected
+                    ? "bg-blue-500/20 border-blue-400 text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] scale-105"
+                    : "bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:border-white/20"
+                }`}
               >
-                <span className="text-xl leading-none" role="img" aria-hidden="true">{emoji}</span>
-                <span className="text-[10px]">{label}</span>
+                <span className="text-2xl leading-none drop-shadow-md" role="img" aria-hidden="true">{emoji}</span>
+                <span className={`text-[10px] font-medium ${isSelected ? "text-blue-300" : ""}`}>{label}</span>
               </button>
             );
           })}

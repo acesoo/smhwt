@@ -35,15 +35,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Self-Deletion RPC**: Added `delete_own_account` Postgres function allowing users to permanently delete their own account and all associated data via cascade.
 
 ### Changed
+- **App-wide UI Overhaul**: Applied a cohesive, premium dark-mode aesthetic across all main pages (Dashboard, Entries, Stories, Goals, Search, Resources, and Profile). This includes ambient background neon glows, glassmorphism sticky headers (`backdrop-blur`), and frosted-glass card containers.
+- **Layout & Skeletons**: Standardized max-width layout containers across all pages and perfectly synchronized all loading skeletons to use the exact same ambient background layers, entirely eliminating layout shifts during data fetching.
+- **Resources Page Refactor**: Removed the redundant search bar to establish a strict separation of concerns (Resources as a "Browse & Filter Hub", Search as the "Query Hub"). Updated the filter section to dynamically map and alphabetically sort `ALL_TAGS` into a clean, interactive tag cloud.
+- **Profile & Dropdowns**: Redesigned the Profile dashboard with etched-glass inputs and frosted-glass buttons. Updated `ProfileDropdown` to use a solid background for maximum readability while retaining premium pop-in animations and floating shadows.
+- **Tag Filtering & Display**: All tag filters across the application upgraded from single-select to multi-select with AND logic (results must match every selected tag). Tags are now styled consistently as interactive blue pills and are strictly sorted alphabetically.
 - **Navigation**: App root (`/`) now redirects to `/dashboard`. Back arrow removed from all primary nav pages; Admin Panel back arrow redirects to `/profile`.
-- **Tag Display**: Tags in `mood-log-form`, `journal-entry-form`, `resource-library`, `search-retrieve`, `peer-stories-client`, and `peer-story-form` are now sorted alphabetically within each category group.
-- **Tag Filtering**: All tag filters upgraded from single-select to multi-select with AND logic — results must match every selected tag to appear.
-- **Search**: Refactored to use title as the primary match basis for cleaner results; tag filtering moved fully client-side for guaranteed AND correctness.
+- **Search Engine**: Refactored to use title as the primary match basis for cleaner results; tag filtering moved fully client-side for guaranteed AND logic correctness.
 - **Session Management**: Wired `SignOutButton` in `ProfileDropdown` directly to the `signOut` server action for proper session termination.
-- **Journal Validation**: Submit button now disabled until both a title and a sufficiently long body are provided, consistent with server-side validation.
-- **Mood Logging**: Duplicate submission now returns a clear, friendly message — "You've already logged your mood today. Come back tomorrow!"
-- **Dashboard Cards**: Recent journal entry cards now show a maximum of 7 tags to prevent UI overflow.
-- **Minor Restyling**: Visual polish applied to `ProfileDropdown`, `MoodInputWidget`, and the Profile, Goals, and Dashboard pages.
+- **Validation & Feedback**: Submit buttons correctly disable until server-side validation rules are met locally. Duplicate mood logging now returns a friendly "Come back tomorrow" UI message. Recent journal entry cards on the Dashboard now show a maximum of 7 tags to prevent UI overflow.
 
 ### Fixed
 - **Search Results**: Resolved a parsing error in search result processing identified during QA testing.

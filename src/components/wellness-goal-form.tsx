@@ -31,19 +31,19 @@ export default function WellnessGoalForm() {
   }
 
   return (
-    <div className="bg-[#1a1a1a] border border-neutral-800 rounded-xl p-6">
-      <h2 className="text-xl font-semibold text-white mb-4">Set a New Goal</h2>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md shadow-xl animate-in fade-in duration-500">
+      <h2 className="text-xl font-semibold text-white mb-4 drop-shadow-md">Set a New Goal</h2>
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
         
-        <div className="space-y-2">
-          <label htmlFor="goal" className="block text-sm font-medium text-neutral-300">
-            What do you want to work toward?
+        <div className="space-y-1.5">
+          <label htmlFor="goal" className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 ml-1">
+            What do you want to achieve?
           </label>
           <textarea
             id="goal"
             name="goal"
             rows={3}
-            className="w-full bg-neutral-900 text-white rounded-lg p-3 border border-neutral-800 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 placeholder:text-neutral-600"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder:text-neutral-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 backdrop-blur-sm transition-all resize-none"
             placeholder="e.g. Meditate for 10 minutes every morning..."
             maxLength={500}
             disabled={loading}
@@ -51,29 +51,33 @@ export default function WellnessGoalForm() {
           />
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="target_date" className="block text-sm font-medium text-neutral-300">
-            Target date <span className="text-neutral-500 font-normal">(optional)</span>
+        <div className="space-y-1.5">
+          <label htmlFor="target_date" className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 ml-1">
+            Target date <span className="text-neutral-500 font-normal lowercase tracking-normal">(optional)</span>
           </label>
           <input
             id="target_date"
             name="target_date"
             type="date"
-            className="w-full bg-neutral-900 text-white rounded-lg p-3 border border-neutral-800 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-neutral-200 placeholder:text-neutral-600 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 backdrop-blur-sm transition-all"
             min={todayISO}
             disabled={loading}
           />
         </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        {success && <p className="text-emerald-500 text-sm">✓ Goal saved successfully!</p>}
+        {error && <p className="text-red-400 text-sm bg-red-950/40 border border-red-800 rounded-xl px-4 py-3 backdrop-blur-sm">{error}</p>}
+        {success && <p className="text-emerald-400 text-sm bg-emerald-950/40 border border-emerald-800 rounded-xl px-4 py-3 backdrop-blur-sm">✓ Goal saved successfully!</p>}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors disabled:opacity-50"
+          className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 text-white font-semibold rounded-xl py-3.5 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.25)] flex justify-center items-center backdrop-blur-sm mt-2"
         >
-          {loading ? "Saving..." : "Save Goal"}
+          {loading ? (
+            <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            "Save Goal"
+          )}
         </button>
       </form>
     </div>

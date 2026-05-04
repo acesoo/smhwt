@@ -21,17 +21,20 @@ const STATUS_CONFIG: Record<GoalStatus, StatusConfig> = {
       { value: "completed", label: "Mark Complete" },
       { value: "abandoned", label: "Abandon" },
     ],
-    badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    // Made the badge glow blue
+    badgeColor: "bg-blue-500/20 text-blue-300 border-blue-500/30 shadow-[0_0_12px_rgba(59,130,246,0.3)] backdrop-blur-sm",
   },
   completed: {
     label: "Completed ✓",
     transitions: [{ value: "active", label: "Reactivate" }],
-    badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    // Made the badge glow emerald
+    badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.3)] backdrop-blur-sm",
   },
   abandoned: {
     label: "Abandoned",
     transitions: [{ value: "active", label: "Reactivate" }],
-    badgeColor: "bg-neutral-500/10 text-neutral-400 border-neutral-500/20",
+    // Clean transparent glass for abandoned
+    badgeColor: "bg-white/5 text-neutral-400 border-white/10 backdrop-blur-sm",
   },
 };
 
@@ -63,11 +66,11 @@ export default function GoalCard({ goal }: { goal: WellnessGoal }) {
   }
 
   return (
-    <div className="bg-[#1a1a1a] border border-neutral-800 rounded-xl p-5 flex flex-col gap-4 relative group">
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-4 group backdrop-blur-md shadow-xl hover:bg-white/[0.07] transition-all duration-300">
       
       {/* Header Row */}
       <div className="flex justify-between items-start">
-        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${config.badgeColor}`}>
+        <span className={`text-[10px] uppercase tracking-wider font-semibold px-3 py-1 rounded-full border ${config.badgeColor}`}>
           {config.label}
         </span>
         <button
@@ -81,27 +84,27 @@ export default function GoalCard({ goal }: { goal: WellnessGoal }) {
       </div>
 
       {/* Goal Body */}
-      <p className="text-neutral-200 leading-relaxed">{goal.goal}</p>
+      <p className="text-neutral-200 leading-relaxed text-sm md:text-base">{goal.goal}</p>
 
       {/* Date & Meta */}
       {goal.target_date && (
-        <p className={`text-sm ${isOverdue ? "text-red-400" : "text-neutral-500"}`}>
+        <p className={`text-xs font-medium ${isOverdue ? "text-red-400" : "text-neutral-500"}`}>
           {isOverdue ? "⚠ Overdue · " : "🗓 Target: "}
           {new Date(goal.target_date).toLocaleDateString(undefined, { timeZone: 'UTC' })}
         </p>
       )}
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-400 text-sm bg-red-950/40 border border-red-800 rounded-lg px-3 py-2">{error}</p>}
 
-      {/* Actions */}
+      {/* Actions (Frosted Glass Buttons) */}
       {config.transitions.length > 0 && (
-        <div className="flex gap-2 mt-2 pt-4 border-t border-neutral-800">
+        <div className="flex flex-wrap gap-2 mt-2 pt-4 border-t border-white/10">
           {config.transitions.map(({ value, label }) => (
             <button
               key={value}
               onClick={() => handleStatusChange(value)}
               disabled={loading}
-              className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-sm font-medium px-4 py-2 rounded-lg transition-colors flex-1"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-neutral-300 hover:text-white transition-all duration-300 backdrop-blur-sm"
             >
               {label}
             </button>

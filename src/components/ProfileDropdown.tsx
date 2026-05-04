@@ -31,42 +31,41 @@ export function ProfileDropdown({ username }: Props) {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Open profile menu"
-        className="w-10 h-10 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center hover:border-neutral-500 transition-colors"
+        className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 backdrop-blur-sm transition-all shadow-sm"
       >
-        <span className="text-sm font-semibold text-neutral-200">
+        <span className="text-sm font-semibold text-blue-300">
           {username ? username.charAt(0).toUpperCase() : "?"}
         </span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-12 w-48 bg-neutral-900 border border-neutral-800 rounded-xl shadow-lg overflow-hidden z-50">
-          <div className="px-4 py-3 border-b border-neutral-800">
-            <p className="text-sm font-semibold text-neutral-200 truncate">{username}</p>
+        <div className="absolute right-0 top-14 w-52 bg-neutral-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="px-4 py-3 border-b border-white/10 bg-white/5">
+            <p className="text-xs font-medium text-neutral-400">Signed in as</p>
+            <p className="text-sm font-semibold text-neutral-100 truncate">{username}</p>
           </div>
 
-          <Link
-            href="/profile"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-300 hover:bg-neutral-800 transition-colors"
-          >
-            <User className="w-4 h-4 text-neutral-500" />
-            View Profile
-          </Link>
+          <div className="p-1.5 space-y-1">
+            <Link
+              href="/profile"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+            >
+              <User className="w-4 h-4 text-blue-400" />
+              View Profile
+            </Link>
 
-          {/* ── Updated: Direct onClick handler ── */}
-          <button
-            type="button"
-            onClick={async () => {
-              // Fire the server action directly
-              await signOut(); 
-              // Note: We don't need to close the dropdown manually because 
-              // the signOut action triggers a full redirect to /login!
-            }}
-            className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-neutral-800 transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </button>
+            <button
+              type="button"
+              onClick={async () => {
+                await signOut(); 
+              }}
+              className="flex items-center gap-3 w-full text-left px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign out
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -109,7 +109,7 @@ function MoodTrendChart({ entries }: { entries: MoodEntry[] }) {
     >
       <defs>
         <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.4" />
           <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
         </linearGradient>
       </defs>
@@ -121,6 +121,7 @@ function MoodTrendChart({ entries }: { entries: MoodEntry[] }) {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ filter: "drop-shadow(0px 0px 4px rgba(59,130,246,0.5))" }}
       />
       {points.map((p, i) => (
         <circle
@@ -129,8 +130,9 @@ function MoodTrendChart({ entries }: { entries: MoodEntry[] }) {
           cy={p.y}
           r="3"
           fill={getMoodColor(p.score)}
-          stroke="#1a1a1a"
+          stroke="rgba(255,255,255,0.2)"
           strokeWidth="1.5"
+          style={{ filter: `drop-shadow(0px 0px 4px ${getMoodColor(p.score)})` }}
         />
       ))}
     </svg>
@@ -139,24 +141,6 @@ function MoodTrendChart({ entries }: { entries: MoodEntry[] }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
-/**
- * S3-UX-03 — DashboardSummaryCard
- *
- * A dashboard widget showing:
- *   - Greeting + logging streak
- *   - Average mood stat + 7-day trend sparkline
- *   - Recent journal entries feed
- *   - Active wellness goals count
- *
- * Usage in dashboard page (src/app/page.tsx):
- *   <DashboardSummaryCard
- *     userName="Jamie"
- *     streak={4}
- *     recentMoodEntries={moodLogs}
- *     recentJournalEntries={journals}
- *     activeGoals={goals}
- *   />
- */
 export function DashboardSummaryCard({
   userName = "there",
   streak = 0,
@@ -172,51 +156,51 @@ export function DashboardSummaryCard({
     hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="bg-[#1a1a1a] border border-neutral-800 rounded-xl overflow-hidden">
+    <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md shadow-2xl animate-in fade-in duration-500">
 
       {/* ── Greeting Header ── */}
-      <div className="px-5 pt-5 pb-4 border-b border-neutral-800">
-        <p className="text-xs text-neutral-500 mb-0.5">
+      <div className="px-5 pt-5 pb-4 border-b border-white/10">
+        <p className="text-xs text-blue-400 font-medium uppercase tracking-wider mb-1">
           {new Date().toLocaleDateString(undefined, {
             weekday: "long", month: "long", day: "numeric",
           })}
         </p>
-        <h2 className="text-base font-semibold text-neutral-100">
+        <h2 className="text-2xl font-bold text-white tracking-tight">
           {greeting}, {userName} 👋
         </h2>
         {streak > 0 && (
-          <p className="text-xs text-neutral-400 mt-1">
+          <p className="text-sm text-neutral-400 mt-1">
             You have logged{" "}
-            <span className="text-blue-400 font-semibold">{streak} day{streak !== 1 ? "s" : ""}</span>{" "}
+            <span className="text-blue-400 font-medium">{streak} day{streak !== 1 ? "s" : ""}</span>{" "}
             in a row
           </p>
         )}
       </div>
 
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-3 divide-x divide-neutral-800 border-b border-neutral-800">
+      <div className="grid grid-cols-3 divide-x divide-white/10 border-b border-white/10">
         {/* Streak */}
-        <div className="px-4 py-3 flex flex-col gap-0.5">
+        <div className="px-4 py-3 flex flex-col gap-0.5 bg-white/[0.02]">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
             Streak
           </span>
-          <span className="text-2xl font-semibold text-neutral-100 leading-none">
+          <span className="text-2xl font-bold text-white leading-none">
             {streak}
           </span>
           <span className="text-[10px] text-neutral-500">days</span>
         </div>
 
         {/* Avg Mood */}
-        <div className="px-4 py-3 flex flex-col gap-0.5">
+        <div className="px-4 py-3 flex flex-col gap-0.5 bg-white/[0.02]">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
             Avg mood
           </span>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-semibold text-neutral-100 leading-none">
+            <span className="text-2xl font-bold text-white leading-none">
               {avgMood ?? "—"}
             </span>
             {avgMood && (
-              <span className="text-base leading-none" role="img" aria-label={`mood emoji`}>
+              <span className="text-base leading-none drop-shadow-md" role="img" aria-label={`mood emoji`}>
                 {getMoodEmoji(avgMood)}
               </span>
             )}
@@ -225,11 +209,11 @@ export function DashboardSummaryCard({
         </div>
 
         {/* Goals */}
-        <div className="px-4 py-3 flex flex-col gap-0.5">
+        <div className="px-4 py-3 flex flex-col gap-0.5 bg-white/[0.02]">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
             Goals
           </span>
-          <span className="text-2xl font-semibold text-neutral-100 leading-none">
+          <span className="text-2xl font-bold text-white leading-none">
             {activeGoalCount}
           </span>
           <span className="text-[10px] text-neutral-500">active</span>
@@ -237,7 +221,7 @@ export function DashboardSummaryCard({
       </div>
 
       {/* ── Mood Trend Chart ── */}
-      <div className="px-5 pt-4 pb-3 border-b border-neutral-800">
+      <div className="px-5 pt-4 pb-3 border-b border-white/10">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
             Mood trend
@@ -248,8 +232,8 @@ export function DashboardSummaryCard({
       </div>
 
       {/* ── Recent Journal Entries ── */}
-      <div className="px-5 pt-4 pb-5">
-        <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 block mb-3">
+      <div className="px-5 pt-4 pb-5 bg-white/[0.01]">
+        <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 block mb-4">
           Recent entries
         </span>
 
@@ -262,21 +246,21 @@ export function DashboardSummaryCard({
             {recentJournalEntries.slice(0, 3).map((entry) => (
               <div
                 key={entry.id}
-                className="flex items-start gap-3 py-2 border-b border-neutral-800 last:border-b-0"
+                className="flex items-start gap-3 py-2 border-b border-white/5 last:border-b-0"
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" aria-hidden="true" />
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.8)]" aria-hidden="true" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-neutral-200 font-medium truncate">
                     {entry.title}
                   </p>
-                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <span className="text-[10px] text-neutral-500">
                       Journal · {formatDate(entry.created_at)}
                     </span>
                     {entry.tags?.slice(0, 7).map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] text-neutral-500 bg-neutral-800 px-1.5 py-0.5 rounded-full border border-neutral-700"
+                        className="text-[10px] text-neutral-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm"
                       >
                         {tag}
                       </span>
