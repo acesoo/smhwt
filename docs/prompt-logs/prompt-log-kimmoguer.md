@@ -234,4 +234,67 @@ When the prompt contains specific real events with clear cause and effect, AI ca
 
 ---
 
-*Last updated: Sprint 5 — QA Reflection finalized | @kimmoguer | feature/qa-docs*
+
+
+---
+
+## S4 — Build Sprint 2 + QA: Test Case Execution (Week 5–6)
+
+---
+
+### Entry 11
+**Date:** Week 5–6
+**Issue:** S4-QA-01
+**Task:** Write and execute test cases TC-012 to TC-021 against integrated dev branch
+
+**Prompt given to AI:**
+> "Help me write detailed QA test cases for a Next.js + Supabase wellness tracker app. I need TC-012 to TC-021 covering: Sign Up, Login & Logout, Mood Tracker (with RLS isolation), Journal entry with tags, Wellness Goals (create + complete), Resource Library (browse + filter), Search & Retrieve (keyword), Navigation (all routes), Edge cases (empty inputs + XSS), and a negative test for unauthenticated access. Format as markdown tables with: Feature, Scenario, Steps, Expected Result, Actual Result, Status, Notes."
+
+**What the AI produced:**
+Claude produced all 10 test cases in a consistent markdown table format. Each included a realistic scenario, numbered steps, and specific expected results. Notable outputs: TC-020 included XSS testing with `<script>alert(1)</script>` as a special character edge case, and TC-021 specified that Supabase should return no data rows without an auth token — not just that the UI redirects.
+
+**What I changed / rejected:**
+The structure and scenarios were solid across all 10. What I changed was the Actual Result and Status columns — those are blank in an AI draft because the AI cannot run the tests. I executed every test case manually against the live dev branch and filled in what actually happened. For TC-018, I documented the real failure: blank results pane, brief "parsing error" toast, inconsistent behavior on retry. That outcome was entirely from my own testing — AI had no part in it. I also added specific technical notes from my own observation (e.g., "Supabase RLS confirmed via Network tab," "XSS safely escaped," "session token verified via DevTools").
+
+**What I did manually:**
+- Ran all 10 test cases manually against the integrated dev branch
+- Filed TC-018 as a GitHub Issue (bug label, assigned to @enzo-q) with full reproduction steps
+- Recorded all pass/fail results and wrote all Notes fields from direct observation
+- Committed completed test cases to feature/qa-docs and opened a PR targeting dev
+
+**PR filed:** `S4-QA-01 — Execute and submit test cases TC-012 to TC-021`
+
+**Decision / learning:**
+Test case templates are the one thing AI is genuinely useful for in QA work — writing consistent structure fast. But the test case is only complete after execution. The Actual Result column is where the real work is, and that cannot be delegated to AI. TC-018 failing while all others passed was something only a person running the test could find.
+
+---
+
+### Entry 12
+**Date:** Week 6
+**Issue:** S4-QA-04
+**Task:** Write and execute test cases TC-022 to TC-024 — Peer Support Stories feature
+
+**Prompt given to AI:**
+> "Write 3 QA test cases for a Peer Support Stories feature in a Next.js + Supabase app. TC-022: anonymous story submission — verify story saves with is_approved = false and no username stored. TC-023: feed displays only approved stories — verify unapproved stories are hidden from regular users. TC-024: tag filter — verify selecting a tag filters the feed correctly and clearing restores all approved stories. Same markdown table format as before."
+
+**What the AI produced:**
+Claude produced all three test cases with scenarios and steps covering the anonymity guarantee at the data layer (TC-022), the is_approved filter logic (TC-023), and tag filter state behavior including clearing (TC-024). TC-022 specifically mentioned checking the Supabase table directly to verify no username field was stored — which was the right approach for a data-layer anonymity check.
+
+**What I changed / rejected:**
+I kept the test structure and expected results as written — they accurately described the behavior we designed. I filled in all Actual Results after manually executing each test. For TC-022, I added the specific note that anonymity is "guaranteed at the data layer" after confirming in the Supabase table view that only story content and tag are stored — no user_id or identifying field. For TC-023, I tested with exactly 2 unapproved and 2 approved stories and documented those numbers. For TC-024, I tested with 4 approved stories across 3 tags and noted that filter state updates without a page reload.
+
+**What I did manually:**
+- Executed all 3 test cases manually against the deployed Vercel production URL
+- Verified TC-022 anonymity directly in Supabase dashboard table view
+- Verified TC-023 RLS behavior via Supabase dashboard — confirmed filter on is_approved = true
+- Recorded all pass/fail results and wrote all Notes fields from direct observation
+- Committed completed test cases to feature/qa-docs and opened a PR targeting dev
+
+**PR filed:** `S4-QA-04 — Execute and submit Peer Support Stories test cases TC-022 to TC-024`
+
+**Decision / learning:**
+The Peer Stories test cases required more setup than the others — I needed approved and unapproved stories in the database before I could run TC-023 and TC-024. That meant coordinating with @enzo-q to either seed the database or use the Admin Panel to approve specific stories. AI can write the test case steps but it cannot anticipate this kind of pre-condition setup work. Test case execution always has hidden logistics that only become visible when you actually try to run the test.
+
+---
+
+*Last updated: Sprint 4 — Test case execution complete | @kimmoguer | feature/qa-docs*
