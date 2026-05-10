@@ -36,7 +36,7 @@ export function DeleteAccountForm() {
           className="w-full justify-start gap-3 bg-neutral-900 border-neutral-800 text-red-400 hover:bg-red-950/20 hover:border-red-900 hover:text-red-400"
         >
           <TriangleAlert className="w-4 h-4" />
-          Request account deletion
+          Account deletion
         </Button>
       ) : (
         <form action={formAction} className="space-y-4">
