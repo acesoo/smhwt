@@ -164,6 +164,21 @@ export function SearchRetrieve() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          {/* ── "All" Button ── */}
+          <button
+            onClick={() => setSelectedTags([])}
+            aria-pressed={selectedTags.length === 0}
+            className={`px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150
+              ${
+                selectedTags.length === 0
+                  ? "bg-blue-600/80 border-blue-400 text-white shadow-[0_0_12px_rgba(59,130,246,0.4)]"
+                  : "bg-white/5 border-white/10 text-neutral-300 hover:border-blue-500/50 hover:bg-white/10"
+              }`}
+          >
+            All
+          </button>
+
+          {/* ── Existing Tags ── */}
           {sortedTags.map((tag) => {
             const active = selectedTags.includes(tag);
             return (

@@ -32,9 +32,13 @@ export type SearchResults = {
 };
 
 /**
- * Fetches journal entries and resources matching the keyword.
- * Tag filtering is handled client-side for guaranteed AND correctness.
- * Pattern summary uses the first selected tag passed separately.
+ * Unified fuzzy search across journal_entries and resources.
+ *
+ * Uses pg_trgm Postgres RPCs for case-insensitive, punctuation-tolerant,
+ * and fuzzy keyword matching at the database level. Tag filtering and
+ * pattern summary are handled after the DB fetch.
+ *
+ * Data shape is unchanged — search-retrieve.tsx client filtering works as-is.
  */
 export async function searchAll(
   keyword: string,
@@ -43,97 +47,62 @@ export async function searchAll(
   try {
     const supabase = await createClient();
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { journals: [], resources: [], pattern: null, error: "Not authenticated." };
+
+    const trimmed = keyword.trim();
+
     // ── Journal entries ────────────────────────────────────────────────────
-    let journalQuery = supabase
-      .from("journal_entries")
-      .select("id, title, body, tags, created_at")
-      .order("created_at", { ascending: false })
-      .limit(50);
+    let journals: JournalResult[] = [];
 
-    if (keyword) {
-      // 1. Remove double quotes to protect the parser
-      const cleanKw = keyword.replace(/"/g, '');
-      
-      const straightKw = cleanKw.replace(/’/g, "'");
-      const curlyKw = cleanKw.replace(/'/g, '’');
-
-      // 2. The "Smart Dictionary" Fix: Auto-inject apostrophes for common words
-      // (\b means "word boundary", so it won't accidentally turn "swim" into "swi'm")
-      const smartStraight = straightKw
-        .replace(/\bim\b/gi, "i'm")
-        .replace(/\bcant\b/gi, "can't")
-        .replace(/\bdont\b/gi, "don't")
-        .replace(/\bive\b/gi, "i've")
-        .replace(/\bthats\b/gi, "that's")
-        .replace(/\bwhats\b/gi, "what's")
-        .replace(/\bwasnt\b/gi, "wasn't");
-
-      const smartCurly = curlyKw
-        .replace(/\bim\b/gi, "i’m")
-        .replace(/\bcant\b/gi, "can’t")
-        .replace(/\bdont\b/gi, "don’t")
-        .replace(/\bive\b/gi, "i’ve")
-        .replace(/\bthats\b/gi, "that’s")
-        .replace(/\bwhats\b/gi, "what’s")
-        .replace(/\bwasnt\b/gi, "wasn’t");
-
-      // 3. Put all variations into a Set (which automatically removes any duplicates)
-      const variations = Array.from(new Set([cleanKw, straightKw, curlyKw, smartStraight, smartCurly]));
-
-      // 4. Build the Supabase .or() string dynamically!
-      const orQuery = variations.map((v) => `title.ilike."%${v}%"`).join(',');
-      
-      journalQuery = journalQuery.or(orQuery);
+    if (trimmed) {
+      const { data, error } = await supabase.rpc("search_journal_entries", {
+        p_keyword: trimmed,
+        p_user_id: user.id,
+        p_limit:   50,
+      });
+      if (error) throw error;
+      journals = (data ?? []) as JournalResult[];
+    } else {
+      // No keyword — fetch all user journals so tag-only filtering still works
+      const { data, error } = await supabase
+        .from("journal_entries")
+        .select("id, title, body, tags, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      journals = (data ?? []) as JournalResult[];
     }
-
-    const { data: journals, error: jError } = await journalQuery;
-    if (jError) throw jError;
 
     // ── Resources ──────────────────────────────────────────────────────────
-    let resourceQuery = supabase
-      .from("resources")
-      .select("id, title, url, tags")
-      .limit(50);
+    let resources: ResourceResult[] = [];
 
-    if (keyword) {
-      const cleanKw = keyword.replace(/"/g, '');
-      const straightKw = cleanKw.replace(/’/g, "'");
-      const curlyKw = cleanKw.replace(/'/g, '’');
-
-      const smartStraight = straightKw
-        .replace(/\bim\b/gi, "i'm")
-        .replace(/\bcant\b/gi, "can't")
-        .replace(/\bdont\b/gi, "don't")
-        .replace(/\bive\b/gi, "i've")
-        .replace(/\bthats\b/gi, "that's")
-        .replace(/\bwhats\b/gi, "what's")
-        .replace(/\bwasnt\b/gi, "wasn't");
-
-      const smartCurly = curlyKw
-        .replace(/\bim\b/gi, "i’m")
-        .replace(/\bcant\b/gi, "can’t")
-        .replace(/\bdont\b/gi, "don’t")
-        .replace(/\bive\b/gi, "i’ve")
-        .replace(/\bthats\b/gi, "that’s")
-        .replace(/\bwhats\b/gi, "what’s")
-        .replace(/\bwasnt\b/gi, "wasn’t");
-
-      const variations = Array.from(new Set([cleanKw, straightKw, curlyKw, smartStraight, smartCurly]));
-      const orQuery = variations.map((v) => `title.ilike."%${v}%"`).join(',');
-      
-      resourceQuery = resourceQuery.or(orQuery);
+    if (trimmed) {
+      const { data, error } = await supabase.rpc("search_resources", {
+        p_keyword: trimmed,
+        p_limit:   50,
+      });
+      if (error) throw error;
+      resources = (data ?? []) as ResourceResult[];
+    } else {
+      const { data, error } = await supabase
+        .from("resources")
+        .select("id, title, url, tags")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      resources = (data ?? []) as ResourceResult[];
     }
 
-    const { data: resources, error: rError } = await resourceQuery;
-    if (rError) throw rError;
-
-    // ── Pattern Summary ────────────────────────────────────────────────────
+    // ── KM Pattern Summary ─────────────────────────────────────────────────
     let pattern: PatternSummary | null = null;
-    
+
     if (patternTag) {
       const { data: taggedJournals } = await supabase
         .from("journal_entries")
         .select("created_at")
+        .eq("user_id", user.id)
         .contains("tags", [patternTag]);
 
       if (taggedJournals && taggedJournals.length > 0) {
@@ -146,6 +115,7 @@ export async function searchAll(
         const { data: moodRange } = await supabase
           .from("mood_logs")
           .select("mood_score, sleep_quality, logged_at")
+          .eq("user_id", user.id)
           .gte("logged_at", minDate)
           .lte("logged_at", maxDate + "T23:59:59Z");
 
@@ -154,12 +124,8 @@ export async function searchAll(
         );
 
         if (matched.length > 0) {
-          const moodScores = matched
-            .map((m) => m.mood_score)
-            .filter((s): s is number => s !== null);
-          const sleepScores = matched
-            .map((m) => m.sleep_quality)
-            .filter((s): s is number => s !== null);
+          const moodScores  = matched.map((m) => m.mood_score).filter((s): s is number => s !== null);
+          const sleepScores = matched.map((m) => m.sleep_quality).filter((s): s is number => s !== null);
 
           pattern = {
             tag: patternTag,
@@ -177,20 +143,10 @@ export async function searchAll(
       }
     }
 
-    return {
-      journals: journals ?? [],
-      resources: resources ?? [],
-      pattern,
-      error: null,
-    };
+    return { journals, resources, pattern, error: null };
 
   } catch (error: unknown) {
-    console.error("Search API Error:", error instanceof Error ? error.message : error);
-    return {
-      journals: [],
-      resources: [],
-      pattern: null,
-      error: "Failed to perform search. Please try again.",
-    };
+    console.error("Search error:", error instanceof Error ? error.message : error);
+    return { journals: [], resources: [], pattern: null, error: "Search failed. Please try again." };
   }
 }

@@ -124,7 +124,7 @@ export function PeerStoryForm() {
                 {group.category}
               </p>
               <div className="flex flex-wrap gap-2">
-                {group.tags.map((tag) => (
+                {group.tags.sort().map((tag) => (
                   <button
                     key={tag}
                     type="button"
