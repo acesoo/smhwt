@@ -5,10 +5,21 @@ All notable changes to the Student Mental Health & Wellness Tracker will be docu
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+*Contributors: acesoo, enzo-q, kimmoguer, anthoncalban, jpcasapao*
+
 ## [Unreleased]
 
+## [0.2.1] - 2026-05-11
+
+### Added
+- **Search Filter Reset**: Added an "All" filter tag in the Search page that gracefully returns the UI to its idle state when no keywords are present, protecting database read quotas.
+
+### Changed
+- **Search Engine Upgrade**: Upgraded the underlying Fuzzy Search engine to utilize Postgres `pg_trgm` extensions. This introduces advanced text normalization, deep typo tolerance, and punctuation stripping directly at the database level.
+- **Stories Tag Sorting**: Sorted the tags in the "Share a story" tab within the Stories page in alphabetical order by group.
+- **UI Polish**: Updated the copy in the `delete-account-form` (removed the word "Request") to provide clearer and more direct intent for the user.
+
 ## [0.2.0] - 2026-05-04
-*Contributors: acesoo, enzo-q, kimmoguer, anthoncalban, jpcasapao*
 
 ### Added
 **Core Features**
