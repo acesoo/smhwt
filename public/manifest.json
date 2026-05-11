@@ -1,0 +1,75 @@
+{
+  "name": "Student Mental Health & Wellness Tracker",
+  "short_name": "Wellness Tracker",
+  "description": "A safe, anonymous space to log your daily wellbeing, access coping resources, and find peer support.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "categories": ["health", "lifestyle", "education"],
+  "icons": [
+    {
+      "src": "/icons/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Log Entries",
+      "short_name": "Log",
+      "description": "Log your mood and journal entries",
+      "url": "/log",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Peer Stories",
+      "short_name": "Stories",
+      "description": "Browse and share peer support stories",
+      "url": "/stories",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Goals",
+      "short_name": "Goals",
+      "description": "Set and track your wellness goals",
+      "url": "/goals",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Search",
+      "short_name": "Search",
+      "description": "Search for resources and journal entries",
+      "url": "/search",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Resources",
+      "short_name": "Resources",
+      "description": "Access helpful resources",
+      "url": "/resources",
+      "icons": [{ "src": "/icons/favicon-96x96.png", "sizes": "96x96" }]
+    }
+  ]
+}
