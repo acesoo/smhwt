@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-05-12
+
+### Added
+- **PWA Support**: Integrated `@ducanh2912/next-pwa` to enable offline capabilities and a standalone mobile experience.
+- **Web App Manifest**: Added `manifest.json` defining app identity, theme colors, and navigation shortcuts for the Dashboard, Log, Stories, and Goals.
+- **PWA Metadata**: Configured `layout.tsx` with high-resolution icons, apple-touch support, and a dedicated `viewport` configuration for mobile-first UI.
+
+### Changed
+- **Centralized Redirection**: Refactored auth navigation logic into `middleware.ts`, making the server the single source of truth for the root path (`/`).
+- **Layout Optimization**: Migrated theme and status bar settings to the Next.js `Viewport` API and removed manual `<head>` meta tags to prevent hydration conflicts.
+- **Navigation Matcher**: Expanded middleware `config` to include the root path (`/`), ensuring all entries to the app are intercepted by auth logic.
+
+### Fixed
+- **Redirect Loop Resolution**: Removed client-side `redirect` from `app/page.tsx` to eliminate the "comma-separated URL" bug (`/dashboard, /dashboard`) caused by racing server and client instructions.
+
 ## [0.2.1] - 2026-05-11
 
 ### Added
