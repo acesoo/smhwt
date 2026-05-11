@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
-
 export default function RootPage() {
-  redirect("/dashboard");
+  // Return null or a simple loading spinner. 
+  // Do NOT use redirect() here.
+  return null; 
 }
